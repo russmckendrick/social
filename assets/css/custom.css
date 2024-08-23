@@ -30,3 +30,19 @@
   );
   color: white;
 }
+
+.link-packt {
+  background: rgb(230, 90, 23);
+  background: linear-gradient(
+    90deg,
+    rgba(230, 90, 23, 1) 0%,
+    rgba(245, 123, 45, 1) 50%,
+    rgba(255, 146, 64, 1) 100%
+  );
+  color: white;
+}
+
+.link-amazon {
+  background: #ff9900;;
+  color: white;
+}

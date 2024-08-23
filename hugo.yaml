@@ -1,0 +1,41 @@
+baseURL: https://www.russ.social/
+
+theme: "lynx"
+title: "Russ McKendrick"
+
+enableEmoji: true
+disableKinds:
+  - "taxonomy"
+  - "term"
+
+params:
+  author:
+    name: "Russ McKendrick"
+    headline: "Buys way too many vinyl records, writes a lot about tech & loves orchestration."
+    image: "sticker-clear.png"
+    links:
+      - blog: 
+          href: "https://www.russ.cloud/"
+          text: "Blog"
+      - github: "https://github.com/russmckendrick"
+      - linkedin: "https://www.linkedin.com/in/russmckendrick/"
+      - mastodon: "https://social.mckendrick.io/@russ"
+      - amazon: "https://www.amazon.com/stores/Russ-McKendrick/author/B079KJV88Z?ref=ap_rdr&isDramIntegrated=true&shoppingPortalEnabled=true"
+      - instagram: "https://www.instagram.com/russmckendrick/"
+      - medium: "https://russmckendrick.medium.com/"
+      - reddit: "https://www.reddit.com/user/russmckendrick/"
+      - apple-music: 
+          href: "https://music.apple.com/profile/russmckendrick"
+          text: "Apple Music"
+      - lastfm: "https://www.last.fm/user/RussMckendrick"
+      - discogs: 
+          href: "https://www.discogs.com/user/russmck/collection?header=1"
+          text: "Discogs"
+      - spotify: "https://open.spotify.com/user/russmckendrick"
+
+markup:
+  highlight:
+    noClasses: false
+  goldmark:
+    renderer:
+      unsafe: true

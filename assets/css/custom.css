@@ -46,3 +46,14 @@
   background: #ff9900;;
   color: white;
 }
+
+.link-records {
+  background: rgb(230, 90, 23);
+  background: linear-gradient(
+    90deg,
+    rgba(199, 37, 62) 0%,
+    rgba(150, 37, 62) 50%,
+    rgba(130,17,49) 100%
+  );
+  color: white;
+}

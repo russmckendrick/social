@@ -17,6 +17,9 @@ params:
       - blog: 
           href: "https://www.russ.cloud/"
           text: "Blog"
+      - records: 
+          href: "https://www.russ.fm/"
+          text: "My Record Collection"
       - github: "https://github.com/russmckendrick"
       - linkedin: "https://www.linkedin.com/in/russmckendrick/"
       - amazon: "https://www.amazon.com/stores/Russ-McKendrick/author/B079KJV88Z?ref=ap_rdr&isDramIntegrated=true&shoppingPortalEnabled=true"

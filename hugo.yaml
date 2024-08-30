@@ -12,7 +12,7 @@ params:
   author:
     name: "Russ McKendrick"
     headline: "Buys way too many vinyl records, writes a lot about tech & loves orchestration."
-    image: "russ.png"
+    image: "sticker-clear.svg"
     links:
       - blog: 
           href: "https://www.russ.cloud/"

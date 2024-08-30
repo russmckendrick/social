@@ -1,3 +1,8 @@
+.rounded-full {
+  border-radius: 9999px;
+  background-color: #474D55;
+}
+
 .link-discogs {
   background: rgb(0, 0, 0);
   background: linear-gradient(

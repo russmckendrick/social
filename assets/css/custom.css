@@ -1,6 +1,47 @@
 .rounded-full {
   border-radius: 9999px;
-  background-color: #474D55;
+  background: linear-gradient(
+    90deg,
+    #1F232A, /* Darker shade */
+    #474D55, /* Original middle shade */
+    #707580  /* Lighter shade */
+  );
+  background-size: 200% 200%;
+  animation: gradientAnimation 4s ease infinite;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.link-medium {
+  background-color: #000000;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(35, 35, 35, 1) 50%,
+    rgba(70, 70, 70, 1) 100%
+  );
 }
 
 .link-discogs {
@@ -26,12 +67,12 @@
 }
 
 .link-blog {
-  background: rgb(57, 71, 85);
+  background: #2C3E50; /* Fallback color */
   background: linear-gradient(
     90deg,
-    rgba(57, 71, 85, 1) 0%,
-    rgba(82, 93, 106, 1) 50%,
-    rgba(139, 152, 165, 1) 100%
+    #2C3E50 0%,   /* Darker shade */
+    #35495E 50%,  /* Medium shade */
+    #BDC3C7 100%  /* Lighter shade */
   );
   color: white;
 }
@@ -53,12 +94,12 @@
 }
 
 .link-records {
-  background: rgb(230, 90, 23);
+  background-color: #3D4255;
   background: linear-gradient(
     90deg,
-    rgba(199, 37, 62) 0%,
-    rgba(150, 37, 62) 50%,
-    rgba(130,17,49) 100%
+    rgba(61, 66, 85, 1) 0%,   /* #3D4255 */
+    rgba(65, 69, 88, 1) 50%,  /* Slightly lighter shade */
+    rgba(71, 75, 96, 1) 100%  /* Another slightly lighter shade */
   );
   color: white;
 }

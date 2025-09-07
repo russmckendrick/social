@@ -21,3 +21,11 @@ export interface Record {
   uri_release: string;
   json_detailed_release: string;
 }
+
+export interface BlogPost {
+  title: string;
+  link: string;
+  pubDate: string;
+  description: string;
+  content?: string;
+}

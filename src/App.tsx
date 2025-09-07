@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { siteConfig } from './config';
-import { SocialLink } from './components';
+import { SocialLink, BlogFeed } from './components';
 import { RecordWall } from './components/RecordWall';
 
 function App() {
@@ -82,6 +82,9 @@ function App() {
 
           {/* Record Wall */}
           <RecordWall />
+
+          {/* Blog Feed */}
+          <BlogFeed />
 
           {/* Footer */}
           <motion.div 

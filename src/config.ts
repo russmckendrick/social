@@ -13,6 +13,12 @@ export interface SiteConfig {
     linkBaseUrl: string;
     recordCount: number;
   };
+  blogFeed: {
+    title: string;
+    feedUrl: string;
+    linkBaseUrl: string;
+    postCount: number;
+  };
 }
 
 export interface SocialLink {
@@ -207,5 +213,11 @@ export const siteConfig: SiteConfig = {
     assetBaseUrl: "https://assets.russ.fm",
     linkBaseUrl: "https://www.russ.fm",
     recordCount: 6
+  },
+  blogFeed: {
+    title: "Latest Blog Posts",
+    feedUrl: "https://www.russ.foo/index.xml",
+    linkBaseUrl: "https://www.russ.cloud",
+    postCount: 5
   }
 };

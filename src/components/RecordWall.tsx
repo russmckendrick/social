@@ -14,16 +14,16 @@ export const RecordWall: React.FC = () => {
         // Use CORS proxy for development, direct URL for production
         const isDev = window.location.hostname === 'localhost';
         const apiUrl = isDev 
-          ? 'https://corsproxy.io/?https://www.russ.fm/collection.json'
-          : 'https://www.russ.fm/collection.json';
+          ? `https://corsproxy.io/?${siteConfig.recordWall.collectionUrl}`
+          : siteConfig.recordWall.collectionUrl;
         
         const response = await fetch(apiUrl);
         if (!response.ok) {
           throw new Error('Failed to fetch collection');
         }
         const data = await response.json();
-        // Get the first 6 records (newest are at the beginning)
-        const latestRecords = data.slice(0, 6);
+        // Get the first N records (newest are at the beginning)
+        const latestRecords = data.slice(0, siteConfig.recordWall.recordCount);
         setRecords(latestRecords);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load records');
@@ -39,8 +39,8 @@ export const RecordWall: React.FC = () => {
     const [imageError, setImageError] = useState(false);
     
     const imageUrl = imageError 
-      ? `https://assets.russ.fm${record.images_uri_release.medium}` 
-      : `https://assets.russ.fm${record.images_uri_release.hi_res}`;
+      ? `${siteConfig.recordWall.assetBaseUrl}${record.images_uri_release.medium}` 
+      : `${siteConfig.recordWall.assetBaseUrl}${record.images_uri_release.hi_res}`;
 
     return (
       <motion.div
@@ -54,7 +54,7 @@ export const RecordWall: React.FC = () => {
         className="record-cover-container"
       >
         <motion.a
-          href={`https://www.russ.fm${record.uri_release}`}
+          href={`${siteConfig.recordWall.linkBaseUrl}${record.uri_release}`}
           target="_blank"
           rel="noopener noreferrer"
           className="record-cover"
@@ -111,7 +111,7 @@ export const RecordWall: React.FC = () => {
       >
         <h3 className="section-title">{siteConfig.recordWall.title}</h3>
         <div className="record-wall loading">
-          {[...Array(6)].map((_, i) => (
+          {[...Array(siteConfig.recordWall.recordCount)].map((_, i) => (
             <div key={i} className="record-placeholder">
               <div className="placeholder-animation"></div>
             </div>

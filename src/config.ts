@@ -8,6 +8,10 @@ export interface SiteConfig {
   };
   recordWall: {
     title: string;
+    collectionUrl: string;
+    assetBaseUrl: string;
+    linkBaseUrl: string;
+    recordCount: number;
   };
 }
 
@@ -198,6 +202,10 @@ export const siteConfig: SiteConfig = {
     ]
   },
   recordWall: {
-    title: "Latest Additions to the record collection"
+    title: "Latest Additions to the record collection",
+    collectionUrl: "https://www.russ.fm/collection.json",
+    assetBaseUrl: "https://assets.russ.fm",
+    linkBaseUrl: "https://www.russ.fm",
+    recordCount: 6
   }
 };

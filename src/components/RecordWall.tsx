@@ -11,11 +11,8 @@ export const RecordWall: React.FC = () => {
   useEffect(() => {
     const fetchRecords = async () => {
       try {
-        // Use CORS proxy for development, direct URL for production
-        const isDev = window.location.hostname === 'localhost';
-        const apiUrl = isDev 
-          ? `https://corsproxy.io/?${siteConfig.recordWall.collectionUrl}`
-          : siteConfig.recordWall.collectionUrl;
+        // Direct API call - CORS headers are now configured
+        const apiUrl = siteConfig.recordWall.collectionUrl;
         
         const response = await fetch(apiUrl);
         if (!response.ok) {

@@ -1,4 +1,4 @@
-import { lazy, ComponentType } from 'react';
+import { lazy, type ComponentType } from 'react';
 
 // Dynamic icon loader that maps icon names to their imports
 export const loadIcon = (iconName: string): ComponentType<any> => {

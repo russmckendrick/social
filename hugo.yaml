@@ -24,7 +24,7 @@ params:
       - linkedin: "https://www.linkedin.com/in/russmckendrick/"
       - amazon: "https://www.amazon.com/stores/Russ-McKendrick/author/B079KJV88Z?ref=ap_rdr&isDramIntegrated=true&shoppingPortalEnabled=true"
       - packt: 
-          href: "https://www.packtpub.com/en-gb/search?query=Russ%20McKendrick"
+          href: "https://www.packtpub.com/en-gb/search?q=Russ%20McKendrick&country=gb&language=en"
           text: "Packt"
       - instagram: "https://www.instagram.com/russmckendrick/"
       - mastodon: "https://social.mckendrick.io/@russ"
@@ -38,9 +38,6 @@ params:
           text: "Apple Music"
       - lastfm: "https://www.last.fm/user/RussMckendrick"
       - spotify: "https://open.spotify.com/user/russmckendrick"
-
-
-
 
 markup:
   highlight:

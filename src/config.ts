@@ -6,6 +6,9 @@ export interface SiteConfig {
     image: string;
     links: SocialLink[];
   };
+  recordWall: {
+    title: string;
+  };
 }
 
 export interface SocialLink {
@@ -193,5 +196,8 @@ export const siteConfig: SiteConfig = {
         }
       }
     ]
+  },
+  recordWall: {
+    title: "Latest Additions to the record collection"
   }
 };

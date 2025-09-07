@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { type Record } from '../types/collection';
+import { siteConfig } from '../config';
 
 export const RecordWall: React.FC = () => {
   const [records, setRecords] = useState<Record[]>([]);
@@ -10,13 +11,19 @@ export const RecordWall: React.FC = () => {
   useEffect(() => {
     const fetchRecords = async () => {
       try {
-        const response = await fetch('https://www.russ.fm/collection.json');
+        // Use CORS proxy for development, direct URL for production
+        const isDev = window.location.hostname === 'localhost';
+        const apiUrl = isDev 
+          ? 'https://corsproxy.io/?https://www.russ.fm/collection.json'
+          : 'https://www.russ.fm/collection.json';
+        
+        const response = await fetch(apiUrl);
         if (!response.ok) {
           throw new Error('Failed to fetch collection');
         }
         const data = await response.json();
-        // Get the last 6 records
-        const latestRecords = data.slice(-6).reverse();
+        // Get the first 6 records (newest are at the beginning)
+        const latestRecords = data.slice(0, 6);
         setRecords(latestRecords);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load records');
@@ -102,7 +109,7 @@ export const RecordWall: React.FC = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 2 }}
       >
-        <h3 className="section-title">Latest Additions to the Collection</h3>
+        <h3 className="section-title">{siteConfig.recordWall.title}</h3>
         <div className="record-wall loading">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="record-placeholder">
@@ -122,7 +129,7 @@ export const RecordWall: React.FC = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 2 }}
       >
-        <h3 className="section-title">Latest Additions to the Collection</h3>
+        <h3 className="section-title">{siteConfig.recordWall.title}</h3>
         <p className="error-message">Unable to load recent albums: {error}</p>
       </motion.div>
     );
@@ -135,7 +142,7 @@ export const RecordWall: React.FC = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 2 }}
     >
-      <h3 className="section-title">Latest Additions to the Collection</h3>
+      <h3 className="section-title">{siteConfig.recordWall.title}</h3>
       <div className="record-wall">
         {records.map((record, index) => (
           <RecordCover 

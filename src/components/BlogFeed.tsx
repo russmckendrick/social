@@ -33,12 +33,19 @@ export const BlogFeed: React.FC = () => {
         
         // Parse RSS feed items
         const items = Array.from(xmlDoc.querySelectorAll('item'));
-        const parsedPosts = items.slice(0, siteConfig.blogFeed.postCount).map(item => ({
-          title: item.querySelector('title')?.textContent || '',
-          link: item.querySelector('link')?.textContent || '',
-          pubDate: item.querySelector('pubDate')?.textContent || '',
-          description: item.querySelector('description')?.textContent || ''
-        }));
+        const parsedPosts = items.slice(0, siteConfig.blogFeed.postCount).map(item => {
+          const link = item.querySelector('link')?.textContent || '';
+          // Generate cover image URL from blog post link
+          const coverImage = link ? `${link}cover.png` : undefined;
+          
+          return {
+            title: item.querySelector('title')?.textContent || '',
+            link,
+            pubDate: item.querySelector('pubDate')?.textContent || '',
+            description: item.querySelector('description')?.textContent || '',
+            coverImage
+          };
+        });
         
         setPosts(parsedPosts);
       } catch (err) {
@@ -52,6 +59,8 @@ export const BlogFeed: React.FC = () => {
   }, []);
 
   const BlogPostCard: React.FC<{ post: BlogPost; index: number }> = ({ post, index }) => {
+    const [imageError, setImageError] = useState(false);
+    
     const formatDate = (dateString: string) => {
       try {
         return new Date(dateString).toLocaleDateString('en-US', {
@@ -94,6 +103,16 @@ export const BlogFeed: React.FC = () => {
             damping: 25
           }}
         >
+          {post.coverImage && !imageError && (
+            <div className="blog-post-image">
+              <img
+                src={post.coverImage}
+                alt={`Cover for ${post.title}`}
+                className="blog-cover-image"
+                onError={() => setImageError(true)}
+              />
+            </div>
+          )}
           <div className="blog-post-content">
             <h4 className="blog-post-title">{post.title}</h4>
             <p className="blog-post-date">{formatDate(post.pubDate)}</p>

@@ -28,4 +28,5 @@ export interface BlogPost {
   pubDate: string;
   description: string;
   content?: string;
+  coverImage?: string;
 }

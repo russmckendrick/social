@@ -81,10 +81,10 @@ function App() {
           </motion.div>
 
           {/* Record Wall */}
-          {/* <RecordWall /> */}
+          <RecordWall />
 
           {/* Blog Feed */}
-          {/* <BlogFeed /> */}
+          <BlogFeed />
 
           {/* Footer */}
           <motion.div 

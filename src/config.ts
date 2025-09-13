@@ -216,7 +216,7 @@ export const siteConfig: SiteConfig = {
   },
   blogFeed: {
     title: "Latest Blog Posts",
-    feedUrl: "https://www.russ.foo/index.xml",
+    feedUrl: "https://www.russ.cloud/index.xml",
     linkBaseUrl: "https://www.russ.cloud",
     postCount: 5
   }

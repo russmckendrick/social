@@ -11,10 +11,18 @@ export const RecordWall: React.FC = () => {
   useEffect(() => {
     const fetchRecords = async () => {
       try {
-        // Direct API call - CORS headers are now configured
-        const apiUrl = siteConfig.recordWall.collectionUrl;
+        let response;
         
-        const response = await fetch(apiUrl);
+        // Try proxy endpoint first (works in production), fallback to direct call for development
+        try {
+          const proxyUrl = `/api/proxy?url=${encodeURIComponent(siteConfig.recordWall.collectionUrl)}`;
+          response = await fetch(proxyUrl);
+        } catch {
+          // Fallback to direct API call for development
+          console.log('Proxy failed, trying direct call...');
+          response = await fetch(siteConfig.recordWall.collectionUrl);
+        }
+        
         if (!response.ok) {
           throw new Error('Failed to fetch collection');
         }

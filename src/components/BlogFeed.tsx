@@ -11,13 +11,18 @@ export const BlogFeed: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        // Use CORS proxy for development, direct URL for production
-        const isDev = window.location.hostname === 'localhost';
-        const apiUrl = isDev 
-          ? `https://corsproxy.io/?${siteConfig.blogFeed.feedUrl}`
-          : siteConfig.blogFeed.feedUrl;
+        let response;
         
-        const response = await fetch(apiUrl);
+        // Try proxy endpoint first (works in production), fallback to direct call for development  
+        try {
+          const proxyUrl = `/api/proxy?url=${encodeURIComponent(siteConfig.blogFeed.feedUrl)}`;
+          response = await fetch(proxyUrl);
+        } catch {
+          // Fallback to direct API call for development
+          console.log('Proxy failed, trying direct call...');
+          response = await fetch(siteConfig.blogFeed.feedUrl);
+        }
+        
         if (!response.ok) {
           throw new Error('Failed to fetch blog feed');
         }

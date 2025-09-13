@@ -100,7 +100,27 @@ export const loadIcon = (iconName: string): ComponentType<any> => {
       }
     });
   }
-  
+
+  // Bootstrap Icons
+  if (iconName.startsWith('Bs')) {
+    return lazy(async () => {
+      try {
+        const module = await import('react-icons/bs');
+        const IconComponent = (module as any)[iconName];
+        if (!IconComponent) {
+          console.warn(`Icon ${iconName} not found in Bootstrap Icons, using fallback`);
+          const fallbackModule = await import('react-icons/fa6');
+          return { default: fallbackModule.FaLink };
+        }
+        return { default: IconComponent };
+      } catch (error) {
+        console.warn(`Failed to load Bootstrap icon ${iconName}:`, error);
+        const fallbackModule = await import('react-icons/fa6');
+        return { default: fallbackModule.FaLink };
+      }
+    });
+  }
+
   // Fallback for unknown prefixes
   console.warn(`Unknown icon prefix for ${iconName}, using fallback`);
   return lazy(async () => {

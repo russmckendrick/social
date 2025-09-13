@@ -1,3 +1,9 @@
+export interface Book {
+  title: string;
+  href?: string;
+  imageUrl: string;
+}
+
 export interface SiteConfig {
   title: string;
   author: {
@@ -18,6 +24,10 @@ export interface SiteConfig {
     feedUrl: string;
     linkBaseUrl: string;
     postCount: number;
+  };
+  bookShelf: {
+    title: string;
+    books: Book[];
   };
 }
 
@@ -43,34 +53,34 @@ export const siteConfig: SiteConfig = {
       {
         type: "blog",
         href: "https://www.russ.cloud/",
-        text: "Blog",
+        text: "My Blog",
         icon: "RiMacFill",
         colors: {
-          primary: "#475569", // slate-600
-          secondary: "#64748b", // slate-500
-          tertiary: "#94a3b8"   // slate-400
+          primary: "#1e293b", // slate-800
+          secondary: "#334155", // slate-700
+          tertiary: "#475569"   // slate-600
         }
       },
       {
         type: "records",
         href: "https://www.russ.fm/",
-        text: "My Record Collection", 
-        icon: "FaRecordVinyl",
+        text: "My Record Collection",
+        icon: "BsFillVinylFill",
         colors: {
-          primary: "#3730a3", // indigo-800
-          secondary: "#4338ca", // indigo-700
-          tertiary: "#6366f1"   // indigo-500
+          primary: "#1e40af", // blue-800
+          secondary: "#2563eb", // blue-600
+          tertiary: "#3b82f6"   // blue-500
         }
       },
       {
         type: "tools",
         href: "https://www.russ.tools/",
-        text: "Russ Tools", 
+        text: "Russ Tools",
         icon: "TbTools",
         colors: {
-          primary: "#0f172a", // dark slate
-          secondary: "#134e4a", // dark teal  
-          tertiary: "#14b8a6"   // bright teal
+          primary: "#0f3460", // dark teal-blue
+          secondary: "#1e5f74", // medium teal
+          tertiary: "#22d3ee"   // cyan-400
         }
       },
       {
@@ -219,5 +229,78 @@ export const siteConfig: SiteConfig = {
     feedUrl: "https://www.russ.cloud/index.xml",
     linkBaseUrl: "https://www.russ.cloud",
     postCount: 5
+  },
+  bookShelf: {
+    title: "My Books",
+    books: [
+      {
+        title: "Monitoring Docker",
+        href: "https://www.packtpub.com/en-gb/product/monitoring-docker-9781785885501",
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/02.jpg"
+      },
+      {
+        title: "Monitoring & Management of Docker Containers",
+        href: "https://thenewstack.io/ebooks/docker-and-containers/monitoring-management-docker-containers/",
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/01.png"
+      },
+      {
+        title: "Extending Docker",
+        href: "",
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/03.jpg"
+      },
+      {
+        title: "Docker Bootcamp",
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/04.jpg"
+      },
+      {
+        title: "Mastering Docker - Second Edition",
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/05.jpg"
+      },
+      {
+        title: "Kubernetes for Serverless Applications",
+        href: "https://www.packtpub.com/product/kubernetes-for-serverless-applications/9781788620376",
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/06.jpg"
+      },
+      {
+        title: "Learn Ansible - First Edition",
+        href: "https://www.packtpub.com/en-gb/product/learn-ansible-9781788999328",
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/07.png"
+      },
+      {
+        title: "Mastering Docker - Third Edition",
+        href: "https://www.packtpub.com/en-gb/product/mastering-docker-9781789618686",
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/08.jpg"
+      },
+      {
+        title: "Docker High Performance - Second Edition",
+        href: "https://www.packtpub.com/en-gb/product/docker-high-performance-9781789804409",
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/09.png"
+      },
+      {
+        title: "Mastering Docker - Fourth Edition",
+        href: "https://www.packtpub.com/en-gb/product/mastering-docker-fourth-edition-9781839213519",
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/10.jpg"
+      },
+      {
+        title: "The Kubernetes Bible - First Edition",
+        href: "https://www.packtpub.com/en-gb/product/the-kubernetes-bible-9781838829452",
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/11.png"
+      },
+      {
+        title: "Infrastructure as Code for Beginners",
+        href: "https://www.packtpub.com/en-gb/product/infrastructure-as-code-for-beginners-9781837636174",
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/12.jpg"
+      },
+      {
+        title: "Learn Ansible - Second Edition",
+        href: "https://www.packtpub.com/en-gb/product/learn-ansible-9781835082171",
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/13.jpg"
+      },
+      {
+        title: "The Kubernetes Bible - Second Edition",
+        href: "https://www.packtpub.com/en-gb/product/the-kubernetes-bible-9781835468241",
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/14.jpg"
+      }
+    ]
   }
 };

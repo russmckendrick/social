@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { siteConfig } from './config';
-import { SocialLink, BlogFeed } from './components';
+import { SocialLink, BlogFeed, BookShelf } from './components';
 import { RecordWall } from './components/RecordWall';
 
 function App() {
@@ -85,6 +85,12 @@ function App() {
 
           {/* Blog Feed */}
           <BlogFeed />
+
+          {/* Book Shelf */}
+          <BookShelf
+            books={siteConfig.bookShelf.books}
+            title={siteConfig.bookShelf.title}
+          />
 
           {/* Footer */}
           <motion.div 

@@ -150,6 +150,17 @@ export const siteConfig: SiteConfig = {
         }
       },
       {
+        type: "bluesky",
+        href: "https://bsky.app/profile/russmckendrick.bsky.social",
+        text: "Bluesky",
+        icon: "SiBluesky",
+        colors: {
+          primary: "#01AAFF", // Azure Radiance
+          secondary: "#A5D4FE", // Anakiwa
+          tertiary: "#15406B"   // Chathams Blue
+        }
+      },
+      {
         type: "medium",
         href: "https://russmckendrick.medium.com/",
         text: "Medium",

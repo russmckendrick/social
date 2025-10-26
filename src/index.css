@@ -51,17 +51,46 @@ body {
 }
 
 .avatar {
-  width: 160px;
-  height: 160px;
+  position: relative;
+  width: 240px;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.avatar-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 240px;
+  height: 240px;
   border-radius: 50%;
-  border: 5px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), rgba(99, 102, 241, 0.08));
+  border: 4px solid white;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    inset 0 2px 4px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  z-index: 1;
+  overflow: hidden;
+}
+
+.avatar-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
   display: block;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
+  filter: drop-shadow(0 25px 45px rgba(15, 23, 42, 0.7));
+  z-index: 2;
+  border-radius: 50%;
 }
 
 .avatar-glow {
@@ -628,8 +657,13 @@ body {
   }
 
   .avatar {
-    width: 140px;
-    height: 140px;
+    width: 200px;
+    height: 200px;
+  }
+
+  .avatar-ring {
+    width: 200px;
+    height: 200px;
   }
 
   .profile {

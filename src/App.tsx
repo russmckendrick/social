@@ -1,9 +1,30 @@
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { siteConfig } from './config';
 import { SocialLink, BlogFeed, BookShelf } from './components';
 import { RecordWall } from './components/RecordWall';
 
+const avatarModules = import.meta.glob('../public/avatars/*.svg', {
+  eager: true,
+  import: 'default',
+  query: '?url',
+}) as Record<string, string>;
+
+const availableAvatars = Object.values(avatarModules);
+const fallbackAvatar = siteConfig.author.image;
+const remotePlaceholderAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(siteConfig.author.name)}&size=160&background=6366f1&color=ffffff`;
+
+const getRandomAvatar = () => {
+  if (!availableAvatars.length) {
+    return fallbackAvatar;
+  }
+  const randomIndex = Math.floor(Math.random() * availableAvatars.length);
+  return availableAvatars[randomIndex];
+};
+
 function App() {
+  const [avatarSrc, setAvatarSrc] = useState<string>(() => getRandomAvatar());
+
   return (
     <motion.div 
       className="gradient-bg"
@@ -22,27 +43,37 @@ function App() {
           >
             <motion.div className="avatar-container">
               <div className="avatar-glow"></div>
-              <motion.img
-                src={siteConfig.author.image}
-                alt={siteConfig.author.name}
+              <motion.div
                 className="avatar"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ 
-                  duration: 0.6, 
+                transition={{
+                  duration: 0.6,
                   delay: 0.4,
                   type: "spring",
                   stiffness: 200,
                   damping: 15
                 }}
-                whileHover={{ 
+                whileHover={{
                   scale: 1.05,
                   transition: { duration: 0.2 }
                 }}
-                onError={(e) => {
-                  e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(siteConfig.author.name)}&size=160&background=6366f1&color=ffffff`;
-                }}
-              />
+              >
+                <div className="avatar-ring"></div>
+                <img
+                  src={avatarSrc}
+                  alt={siteConfig.author.name}
+                  className="avatar-image"
+                  onError={() => {
+                    setAvatarSrc((current) => {
+                      if (current !== fallbackAvatar) {
+                        return fallbackAvatar;
+                      }
+                      return remotePlaceholderAvatar;
+                    });
+                  }}
+                />
+              </motion.div>
             </motion.div>
             
             <motion.h1 

@@ -14,16 +14,28 @@ const availableAvatars = Object.values(avatarModules);
 const fallbackAvatar = siteConfig.author.image;
 const remotePlaceholderAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(siteConfig.author.name)}&size=160&background=6366f1&color=ffffff`;
 
-const getRandomAvatar = () => {
+const getRandomAvatar = (excludeCurrent?: string) => {
   if (!availableAvatars.length) {
     return fallbackAvatar;
   }
+
+  // If we have multiple avatars and want to exclude the current one
+  if (availableAvatars.length > 1 && excludeCurrent) {
+    const filteredAvatars = availableAvatars.filter(avatar => avatar !== excludeCurrent);
+    const randomIndex = Math.floor(Math.random() * filteredAvatars.length);
+    return filteredAvatars[randomIndex];
+  }
+
   const randomIndex = Math.floor(Math.random() * availableAvatars.length);
   return availableAvatars[randomIndex];
 };
 
 function App() {
   const [avatarSrc, setAvatarSrc] = useState<string>(() => getRandomAvatar());
+
+  const handleAvatarClick = () => {
+    setAvatarSrc(getRandomAvatar(avatarSrc));
+  };
 
   return (
     <motion.div 
@@ -58,6 +70,11 @@ function App() {
                   scale: 1.05,
                   transition: { duration: 0.2 }
                 }}
+                whileTap={{
+                  scale: 0.95
+                }}
+                onClick={handleAvatarClick}
+                style={{ cursor: 'pointer' }}
               >
                 <div className="avatar-ring"></div>
                 <img

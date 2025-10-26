@@ -54,10 +54,6 @@ body {
   position: relative;
   width: 240px;
   height: 240px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
 }
 
 .avatar-ring {
@@ -654,6 +650,11 @@ body {
   .headline {
     font-size: 1.25rem;
     max-width: 90%;
+  }
+
+  .avatar-container {
+    width: 200px;
+    height: 200px;
   }
 
   .avatar {

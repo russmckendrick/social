@@ -4,6 +4,7 @@ import * as SiIcons from "react-icons/si";
 import * as LuIcons from "react-icons/lu";
 import * as FaIcons from "react-icons/fa";
 import { clsx } from 'clsx';
+import { useTheme } from '../context/ThemeContext';
 
 interface LinkCardProps {
     link: SocialLink;
@@ -53,19 +54,11 @@ const getIcon = (library: string, name: string) => {
 
 export const LinkCard: React.FC<LinkCardProps> = ({ link, className }) => {
     const IconComponent = getIcon(link.icon.library, link.icon.name);
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
 
-    // Map accent colors to tailwind classes if desired, or inline styles
-    // Using inline styles for dynamic colors from config to adhere to "rich aesthetics"
-    // but using Tailwind for structure.
-
-    const bgStyle = {
-        // backgroundColor: link.accent === 'white' ? '#ffffff' : undefined, // Default handling - removed as 'white' is not in AccentColor
-    };
-
-    // Helper to get a soft background color based on the accent name
-    // The original CSS had specific hex vars. We can approximate or use inline style if valid.
-    // For now let's use a mapping approach for Tailwind classes or just simple classes.
-
+    // Light mode: soft pastel background with accent text/border
+    // Dark mode: brand color (iconColor) as background with white text/icon
     const accentMap: Record<string, string> = {
         blue: 'bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-600',
         pink: 'bg-pink-50 text-pink-600 hover:bg-pink-100 border border-pink-600',
@@ -76,7 +69,12 @@ export const LinkCard: React.FC<LinkCardProps> = ({ link, className }) => {
         gray: 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-700',
     };
 
-    const colorClass = accentMap[link.accent] || 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-700';
+    const lightModeClass = accentMap[link.accent] || 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-700';
+    const darkModeClass = 'text-white border-transparent';
+
+    // In dark mode, use the brand color (iconColor) as background
+    const bgStyle = isDark ? { backgroundColor: link.iconColor } : {};
+    const iconColor = isDark ? '#ffffff' : link.iconColor;
 
     return (
         <a
@@ -85,13 +83,13 @@ export const LinkCard: React.FC<LinkCardProps> = ({ link, className }) => {
             rel="noopener noreferrer"
             className={clsx(
                 "flex flex-col items-center justify-center p-6 h-full w-full rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-lg group",
-                colorClass,
+                isDark ? darkModeClass : lightModeClass,
                 className
             )}
             style={bgStyle}
         >
             <div className="mb-3 text-4xl transition-transform duration-300 group-hover:-translate-y-1">
-                <IconComponent style={{ color: link.iconColor }} />
+                <IconComponent style={{ color: iconColor }} />
             </div>
             <span className="font-semibold text-sm text-center font-display leading-tight opacity-90">
                 {link.text}

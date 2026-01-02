@@ -37,7 +37,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ className }) => {
 
   return (
     <div className={clsx(
-      "flex flex-col items-center justify-center p-6 bg-white rounded-2xl shadow-sm border border-gray-100 text-center h-full w-full overflow-hidden",
+      "flex flex-col items-center justify-center p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 text-center h-full w-full overflow-hidden transition-colors duration-300",
       className
     )}>
       <button
@@ -46,14 +46,13 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ className }) => {
         title="Click for a new avatar"
       >
         {/* Circle background */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full bg-gray-700 shadow-md border-4 border-white" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full bg-gray-700 dark:bg-gray-600 shadow-md border-4 border-white dark:border-gray-800 transition-colors duration-300" />
         {/* Container for avatar - allows top overflow, clips bottom to circle */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full overflow-hidden">
           <img
             src={avatar}
             alt={siteConfig.author.name}
-            className="absolute w-[130%] h-auto object-contain left-1/2 -translate-x-1/2"
-            style={{ bottom: '-5%' }}
+            className="absolute w-[130%] h-auto object-contain left-1/2 -translate-x-1/2 bottom-0"
           />
         </div>
         {/* Top overflow layer - shows head above circle */}
@@ -61,17 +60,16 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ className }) => {
           src={avatar}
           alt=""
           aria-hidden="true"
-          className="absolute w-[130%] h-auto object-contain left-1/2 -translate-x-1/2 pointer-events-none"
+          className="absolute w-[130%] h-auto object-contain left-1/2 -translate-x-1/2 pointer-events-none bottom-0"
           style={{
-            bottom: '-5%',
             clipPath: 'inset(0 0 60% 0)'
           }}
         />
       </button>
-      <h1 className="text-3xl font-bold text-gray-900 mb-2 font-display tracking-tight">
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 font-display tracking-tight transition-colors duration-300">
         {siteConfig.author.name}
       </h1>
-      <p className="text-gray-500 text-base max-w-xs leading-relaxed">
+      <p className="text-gray-500 dark:text-gray-400 text-base max-w-xs leading-relaxed transition-colors duration-300">
         {siteConfig.author.headline}
       </p>
     </div>

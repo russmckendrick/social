@@ -65,7 +65,7 @@ export const BentoGrid: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-gray-100"></div>
       </div>
     );
   }
@@ -124,14 +124,14 @@ export const BentoGrid: React.FC = () => {
         })}
 
         {/* Footer - spans full width at all breakpoints */}
-        <div className="col-span-2 md:col-span-4 lg:col-span-6 xl:col-span-8 py-8 text-center text-gray-400 text-sm">
+        <div className="col-span-2 md:col-span-4 lg:col-span-6 xl:col-span-8 py-8 text-center text-gray-400 dark:text-gray-500 text-sm transition-colors duration-300">
           <p>{siteConfig.footer.text}</p>
           {siteConfig.footer.showSource && siteConfig.footer.sourceUrl && (
             <a
               href={siteConfig.footer.sourceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block mt-2 text-gray-500 hover:text-gray-700 transition-colors"
+              className="inline-block mt-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
             >
               View Source →
             </a>

@@ -21,7 +21,7 @@ export const RecordCard: React.FC<RecordCardProps> = ({ record, className }) => 
             target="_blank"
             rel="noopener noreferrer"
             className={clsx(
-                "relative block h-full w-full rounded-2xl overflow-hidden group border border-gray-100 bg-white",
+                "relative block h-full w-full rounded-2xl overflow-hidden group border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 transition-colors duration-300",
                 className
             )}
         >

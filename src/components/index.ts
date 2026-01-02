@@ -4,3 +4,5 @@ export { LinkCard } from './LinkCard';
 export { BookCard } from './BookCard';
 export { RecordCard } from './RecordCard';
 export { PostCard } from './PostCard';
+export { HeaderCard } from './HeaderCard';
+export { ThemeSwitcher } from './ThemeSwitcher';

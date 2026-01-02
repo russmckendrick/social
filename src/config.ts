@@ -2,6 +2,7 @@ export interface Book {
   title: string;
   href?: string;
   imageUrl: string;
+  spineColor?: string; // Hex color for spine/border that matches the book cover edge
 }
 
 export type IconLibrary = 'simple' | 'lucide' | 'fa';
@@ -269,70 +270,84 @@ export const siteConfig: SiteConfig = {
       {
         title: "Monitoring Docker",
         href: "https://www.packtpub.com/en-gb/product/monitoring-docker-9781785885501",
-        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/02.jpg"
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/02.jpg",
+        spineColor: "#0c3d5f"
       },
       {
         title: "Monitoring & Management of Docker Containers",
         href: "https://thenewstack.io/ebooks/docker-and-containers/monitoring-management-docker-containers/",
-        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/01.png"
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/01.png",
+        spineColor: "#9b4d96"
       },
       {
         title: "Extending Docker",
         href: "",
-        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/03.jpg"
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/03.jpg",
+        spineColor: "#1a3a5c"
       },
       {
         title: "Docker Bootcamp",
-        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/04.jpg"
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/04.jpg",
+        spineColor: "#f97316"
       },
       {
         title: "Mastering Docker - Second Edition",
-        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/05.jpg"
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/05.jpg",
+        spineColor: "#1a5f5f"
       },
       {
         title: "Kubernetes for Serverless Applications",
         href: "https://www.packtpub.com/product/kubernetes-for-serverless-applications/9781788620376",
-        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/06.jpg"
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/06.jpg",
+        spineColor: "#2563eb"
       },
       {
         title: "Learn Ansible - First Edition",
         href: "https://www.packtpub.com/en-gb/product/learn-ansible-9781788999328",
-        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/07.png"
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/07.png",
+        spineColor: "#f97316"
       },
       {
         title: "Mastering Docker - Third Edition",
         href: "https://www.packtpub.com/en-gb/product/mastering-docker-9781789618686",
-        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/08.jpg"
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/08.jpg",
+        spineColor: "#1a5f5f"
       },
       {
         title: "Docker High Performance - Second Edition",
         href: "https://www.packtpub.com/en-gb/product/docker-high-performance-9781789804409",
-        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/09.png"
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/09.png",
+        spineColor: "#1a4a4a"
       },
       {
         title: "Mastering Docker - Fourth Edition",
         href: "https://www.packtpub.com/en-gb/product/mastering-docker-fourth-edition-9781839213519",
-        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/10.jpg"
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/10.jpg",
+        spineColor: "#1a5f5f"
       },
       {
         title: "The Kubernetes Bible - First Edition",
         href: "https://www.packtpub.com/en-gb/product/the-kubernetes-bible-9781838829452",
-        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/11.png"
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/11.png",
+        spineColor: "#1e3a5f"
       },
       {
         title: "Infrastructure as Code for Beginners",
         href: "https://www.packtpub.com/en-gb/product/infrastructure-as-code-for-beginners-9781837636174",
-        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/12.jpg"
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/12.jpg",
+        spineColor: "#f97316"
       },
       {
         title: "Learn Ansible - Second Edition",
         href: "https://www.packtpub.com/en-gb/product/learn-ansible-9781835082171",
-        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/13.jpg"
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/13.jpg",
+        spineColor: "#f97316"
       },
       {
         title: "The Kubernetes Bible - Second Edition",
         href: "https://www.packtpub.com/en-gb/product/the-kubernetes-bible-9781835468241",
-        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/14.jpg"
+        imageUrl: "https://raw.githubusercontent.com/russmckendrick/russmckendrick/master/img/14.jpg",
+        spineColor: "#1e3a5f"
       }
     ]
   }

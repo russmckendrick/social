@@ -26,24 +26,48 @@ interface ProfileCardProps {
 export const ProfileCard: React.FC<ProfileCardProps> = ({ className }) => {
   const [avatar, setAvatar] = useState<string>('/sticker-clear.svg');
 
-  useEffect(() => {
-    // Pick a random avatar on mount
+  const pickRandomAvatar = () => {
     const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
     setAvatar(`/avatars/${randomAvatar}`);
+  };
+
+  useEffect(() => {
+    pickRandomAvatar();
   }, []);
 
   return (
     <div className={clsx(
-      "flex flex-col items-center justify-center p-8 bg-white rounded-2xl shadow-sm border border-gray-100 text-center h-full w-full",
+      "flex flex-col items-center justify-center p-6 bg-white rounded-2xl shadow-sm border border-gray-100 text-center h-full w-full overflow-hidden",
       className
     )}>
-      <div className="w-32 h-32 rounded-full overflow-hidden mb-6 shadow-md border-4 border-white">
+      <button
+        onClick={pickRandomAvatar}
+        className="relative w-40 h-48 mb-2 cursor-pointer hover:scale-105 transition-all duration-300 focus:outline-none flex-shrink-0"
+        title="Click for a new avatar"
+      >
+        {/* Circle background */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full bg-gray-700 shadow-md border-4 border-white" />
+        {/* Container for avatar - allows top overflow, clips bottom to circle */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full overflow-hidden">
+          <img
+            src={avatar}
+            alt={siteConfig.author.name}
+            className="absolute w-[130%] h-auto object-contain left-1/2 -translate-x-1/2"
+            style={{ bottom: '-5%' }}
+          />
+        </div>
+        {/* Top overflow layer - shows head above circle */}
         <img
           src={avatar}
-          alt={siteConfig.author.name}
-          className="w-full h-full object-cover"
+          alt=""
+          aria-hidden="true"
+          className="absolute w-[130%] h-auto object-contain left-1/2 -translate-x-1/2 pointer-events-none"
+          style={{
+            bottom: '-5%',
+            clipPath: 'inset(0 0 60% 0)'
+          }}
         />
-      </div>
+      </button>
       <h1 className="text-3xl font-bold text-gray-900 mb-2 font-display tracking-tight">
         {siteConfig.author.name}
       </h1>

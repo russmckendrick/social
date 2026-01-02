@@ -2,7 +2,16 @@
   "permissions": {
     "allow": [
       "Bash(pkill:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(pnpm remove:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm run build:*)",
+      "WebFetch(domain:www.behance.net)",
+      "WebSearch",
+      "Skill(frontend-design)",
+      "Bash(npx tsc:*)",
+      "Bash(cat:*)",
+      "Bash(node -e:*)"
     ],
     "deny": [],
     "ask": []

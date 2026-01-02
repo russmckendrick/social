@@ -1,4 +1,6 @@
-export { SocialLink } from './SocialLink';
-export { SocialIcon } from './SocialIcon';
-export { BlogFeed } from './BlogFeed';
-export { BookShelf } from './BookShelf';
+export { BentoGrid } from './BentoGrid';
+export { ProfileCard } from './ProfileCard';
+export { LinkCard } from './LinkCard';
+export { BookCard } from './BookCard';
+export { RecordCard } from './RecordCard';
+export { PostCard } from './PostCard';

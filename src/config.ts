@@ -4,8 +4,41 @@ export interface Book {
   imageUrl: string;
 }
 
+export type IconLibrary = 'simple' | 'lucide' | 'fa';
+export type CardSize = '1x1' | '2x1' | '2x2' | '4x2' | '4x4';
+export type AccentColor = 'blue' | 'pink' | 'yellow' | 'green' | 'purple' | 'orange' | 'gray';
+export type SectionType = 'links' | 'blog' | 'books' | 'records';
+
+export interface HeaderConfig {
+  enabled: boolean;
+  text: string;
+  size: CardSize;
+  color?: AccentColor;
+}
+
+export interface IconConfig {
+  name: string;
+  library: IconLibrary;
+}
+
+export interface SocialLink {
+  type: string;
+  href: string;
+  text: string;
+  icon: IconConfig;
+  iconColor: string;
+  size: CardSize;
+  accent: AccentColor;
+}
+
 export interface SiteConfig {
   title: string;
+  sectionOrder: SectionType[];
+  footer: {
+    text: string;
+    showSource?: boolean;
+    sourceUrl?: string;
+  };
   author: {
     name: string;
     headline: string;
@@ -18,33 +51,33 @@ export interface SiteConfig {
     assetBaseUrl: string;
     linkBaseUrl: string;
     recordCount: number;
+    itemSize: CardSize;
+    header: HeaderConfig;
   };
   blogFeed: {
     title: string;
     feedUrl: string;
     linkBaseUrl: string;
     postCount: number;
+    itemSize: CardSize;
+    header: HeaderConfig;
   };
   bookShelf: {
     title: string;
     books: Book[];
-  };
-}
-
-export interface SocialLink {
-  type: string;
-  href: string;
-  text: string;
-  icon: string;
-  colors: {
-    primary: string;
-    secondary: string;
-    tertiary: string;
+    itemSize: CardSize;
+    header: HeaderConfig;
   };
 }
 
 export const siteConfig: SiteConfig = {
   title: "Russ McKendrick",
+  sectionOrder: ['links', 'blog', 'books', 'records'],
+  footer: {
+    text: "Made with ☕ and mass mass mass amounts of AI",
+    showSource: true,
+    sourceUrl: "https://github.com/russmckendrick/russ-social"
+  },
   author: {
     name: "Russ McKendrick",
     headline: "Buys way too many vinyl records, writes a lot about tech & loves orchestration.",
@@ -54,195 +87,184 @@ export const siteConfig: SiteConfig = {
         type: "blog",
         href: "https://www.russ.cloud/",
         text: "My Blog",
-        icon: "RiMacFill",
-        colors: {
-          primary: "#1e293b", // slate-800
-          secondary: "#334155", // slate-700
-          tertiary: "#475569"   // slate-600
-        }
+        icon: { name: "rss", library: "simple" },
+        iconColor: "#3b82f6",
+        size: "1x1",
+        accent: "blue"
       },
       {
         type: "records",
         href: "https://www.russ.fm/",
         text: "My Record Collection",
-        icon: "BsFillVinylFill",
-        colors: {
-          primary: "#1e40af", // blue-800
-          secondary: "#2563eb", // blue-600
-          tertiary: "#3b82f6"   // blue-500
-        }
+        icon: { name: "discogs", library: "simple" },
+        iconColor: "#8b5cf6",
+        size: "1x1",
+        accent: "purple"
       },
       {
         type: "tools",
         href: "https://www.russ.tools/",
         text: "Russ Tools",
-        icon: "TbTools",
-        colors: {
-          primary: "#0f3460", // dark teal-blue
-          secondary: "#1e5f74", // medium teal
-          tertiary: "#22d3ee"   // cyan-400
-        }
+        icon: { name: "Wrench", library: "lucide" },
+        iconColor: "#10b981",
+        size: "1x1",
+        accent: "green"
       },
       {
         type: "github",
         href: "https://github.com/russmckendrick",
         text: "GitHub",
-        icon: "FaGithub",
-        colors: {
-          primary: "#111827", // gray-900
-          secondary: "#374151", // gray-700
-          tertiary: "#6b7280"   // gray-500
-        }
+        icon: { name: "github", library: "simple" },
+        iconColor: "#1d1d1f",
+        size: "1x1",
+        accent: "gray"
       },
       {
         type: "linkedin",
         href: "https://www.linkedin.com/in/russmckendrick/",
         text: "LinkedIn",
-        icon: "FaLinkedin",
-        colors: {
-          primary: "#1e40af", // blue-800
-          secondary: "#2563eb", // blue-600
-          tertiary: "#3b82f6"   // blue-500
-        }
+        icon: { name: "Linkedin", library: "fa" },
+        iconColor: "#0077b5",
+        size: "1x1",
+        accent: "blue"
       },
       {
         type: "amazon",
         href: "https://www.amazon.com/stores/Russ-McKendrick/author/B079KJV88Z?ref=ap_rdr&isDramIntegrated=true&shoppingPortalEnabled=true",
         text: "Amazon",
-        icon: "FaAmazon",
-        colors: {
-          primary: "#ea580c", // orange-600
-          secondary: "#f97316", // orange-500
-          tertiary: "#fb923c"   // orange-400
-        }
+        icon: { name: "Amazon", library: "fa" },
+        iconColor: "#ff9900",
+        size: "1x1",
+        accent: "orange"
       },
       {
         type: "packt",
         href: "https://www.packtpub.com/en-gb/search?q=Russ%20McKendrick&country=gb&language=en",
         text: "Packt",
-        icon: "SiPackt",
-        colors: {
-          primary: "#c2410c", // orange-700
-          secondary: "#ea580c", // orange-600
-          tertiary: "#f97316"   // orange-500
-        }
+        icon: { name: "packt", library: "simple" },
+        iconColor: "#f97316",
+        size: "1x1",
+        accent: "orange"
       },
       {
         type: "instagram",
         href: "https://www.instagram.com/russmckendrick/",
         text: "Instagram",
-        icon: "FaInstagram",
-        colors: {
-          primary: "#dc2626", // red-600 (Instagram gradient start)
-          secondary: "#c026d3", // fuchsia-600 (Instagram gradient middle)
-          tertiary: "#7c3aed"   // violet-600 (Instagram gradient end)
-        }
+        icon: { name: "instagram", library: "simple" },
+        iconColor: "#e4405f",
+        size: "1x1",
+        accent: "pink"
       },
       {
         type: "mastodon",
         href: "https://social.mckendrick.io/@russ",
         text: "Mastodon",
-        icon: "FaMastodon",
-        colors: {
-          primary: "#2563eb", // blue-600
-          secondary: "#7c3aed", // violet-600
-          tertiary: "#c026d3"   // fuchsia-600
-        }
+        icon: { name: "mastodon", library: "simple" },
+        iconColor: "#6364ff",
+        size: "1x1",
+        accent: "purple"
       },
       {
         type: "bluesky",
         href: "https://bsky.app/profile/russmckendrick.bsky.social",
         text: "Bluesky",
-        icon: "SiBluesky",
-        colors: {
-          primary: "#01AAFF", // Azure Radiance
-          secondary: "#A5D4FE", // Anakiwa
-          tertiary: "#15406B"   // Chathams Blue
-        }
+        icon: { name: "bluesky", library: "simple" },
+        iconColor: "#0085ff",
+        size: "1x1",
+        accent: "blue"
       },
       {
         type: "medium",
         href: "https://russmckendrick.medium.com/",
         text: "Medium",
-        icon: "FaMedium",
-        colors: {
-          primary: "#111827", // gray-900
-          secondary: "#374151", // gray-700
-          tertiary: "#6b7280"   // gray-500
-        }
+        icon: { name: "medium", library: "simple" },
+        iconColor: "#1d1d1f",
+        size: "1x1",
+        accent: "gray"
       },
       {
         type: "reddit",
         href: "https://www.reddit.com/user/russmckendrick/",
         text: "Reddit",
-        icon: "FaReddit",
-        colors: {
-          primary: "#c2410c", // orange-700
-          secondary: "#dc2626", // red-600
-          tertiary: "#ef4444"   // red-500
-        }
+        icon: { name: "reddit", library: "simple" },
+        iconColor: "#ff4500",
+        size: "1x1",
+        accent: "orange"
       },
       {
         type: "discogs",
         href: "https://www.discogs.com/user/russmck/collection?header=1",
         text: "Discogs",
-        icon: "SiDiscogs",
-        colors: {
-          primary: "#111827", // gray-900
-          secondary: "#374151", // gray-700
-          tertiary: "#6b7280"   // gray-500
-        }
+        icon: { name: "discogs", library: "simple" },
+        iconColor: "#1d1d1f",
+        size: "1x1",
+        accent: "gray"
       },
       {
         type: "apple-music",
         href: "https://music.apple.com/profile/russmckendrick",
         text: "Apple Music",
-        icon: "SiApplemusic",
-        colors: {
-          primary: "#dc2626", // red-600
-          secondary: "#ef4444", // red-500
-          tertiary: "#f87171"   // red-400
-        }
+        icon: { name: "applemusic", library: "simple" },
+        iconColor: "#fa243c",
+        size: "1x1",
+        accent: "pink"
       },
       {
         type: "lastfm",
         href: "https://www.last.fm/user/RussMckendrick",
         text: "Last.fm",
-        icon: "FaLastfm",
-        colors: {
-          primary: "#b91c1c", // red-700
-          secondary: "#dc2626", // red-600
-          tertiary: "#ef4444"   // red-500
-        }
+        icon: { name: "lastdotfm", library: "simple" },
+        iconColor: "#d51007",
+        size: "1x1",
+        accent: "pink"
       },
       {
         type: "spotify",
         href: "https://open.spotify.com/user/russmckendrick",
         text: "Spotify",
-        icon: "FaSpotify",
-        colors: {
-          primary: "#059669", // emerald-600
-          secondary: "#10b981", // emerald-500
-          tertiary: "#34d399"   // emerald-400
-        }
+        icon: { name: "spotify", library: "simple" },
+        iconColor: "#1db954",
+        size: "1x1",
+        accent: "green"
       }
     ]
   },
   recordWall: {
-    title: "Latest Additions to the record collection",
+    title: "Latest Records",
     collectionUrl: "https://www.russ.fm/collection.json",
     assetBaseUrl: "https://assets.russ.fm",
     linkBaseUrl: "https://www.russ.fm",
-    recordCount: 6
+    recordCount: 16,
+    itemSize: "1x1",
+    header: {
+      enabled: true,
+      text: "Latest additons to the record collection ...",
+      size: "2x1",
+      color: "gray"
+    }
   },
   blogFeed: {
-    title: "Latest Blog Posts",
-    feedUrl: "https://www.russ.cloud/index.xml",
+    title: "Latest Posts",
+    feedUrl: "https://www.russ.cloud/rss.xml",
     linkBaseUrl: "https://www.russ.cloud",
-    postCount: 5
+    postCount: 7,
+    itemSize: "2x1",
+    header: {
+      enabled: true,
+      text: "From the Blog ...",
+      size: "2x1",
+      color: "gray"
+    }
   },
   bookShelf: {
     title: "My Books",
+    itemSize: "1x1",
+    header: {
+      enabled: true,
+      text: "Books I have written ...",
+      size: "2x1",
+      color: "gray"
+    },
     books: [
       {
         title: "Monitoring Docker",

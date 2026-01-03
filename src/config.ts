@@ -45,6 +45,7 @@ export interface SiteConfig {
     headline: string;
     image: string;
     links: SocialLink[];
+    hoverIcon: IconConfig;
   };
   recordWall: {
     title: string;
@@ -54,6 +55,7 @@ export interface SiteConfig {
     recordCount: number;
     itemSize: CardSize;
     header: HeaderConfig;
+    hoverIcon: IconConfig;
   };
   blogFeed: {
     title: string;
@@ -62,12 +64,14 @@ export interface SiteConfig {
     postCount: number;
     itemSize: CardSize;
     header: HeaderConfig;
+    hoverIcon: IconConfig;
   };
   bookShelf: {
     title: string;
     books: Book[];
     itemSize: CardSize;
     header: HeaderConfig;
+    hoverIcon: IconConfig;
   };
 }
 
@@ -97,7 +101,7 @@ export const siteConfig: SiteConfig = {
         type: "records",
         href: "https://www.russ.fm/",
         text: "My Record Collection",
-        icon: { name: "discogs", library: "simple" },
+        icon: { name: "RecordVinyl", library: "fa" },
         iconColor: "#8b5cf6",
         size: "1x1",
         accent: "purple"
@@ -228,7 +232,8 @@ export const siteConfig: SiteConfig = {
         size: "1x1",
         accent: "green"
       }
-    ]
+    ],
+    hoverIcon: { name: "Link", library: "fa" }
   },
   recordWall: {
     title: "Latest Records",
@@ -242,7 +247,8 @@ export const siteConfig: SiteConfig = {
       text: "Latest additons to the record collection ...",
       size: "2x1",
       color: "gray"
-    }
+    },
+    hoverIcon: { name: "RecordVinyl", library: "fa" }
   },
   blogFeed: {
     title: "Latest Posts",
@@ -255,7 +261,8 @@ export const siteConfig: SiteConfig = {
       text: "From the Blog ...",
       size: "2x1",
       color: "gray"
-    }
+    },
+    hoverIcon: { name: "Rss", library: "fa" }
   },
   bookShelf: {
     title: "My Books",
@@ -266,6 +273,7 @@ export const siteConfig: SiteConfig = {
       size: "2x1",
       color: "gray"
     },
+    hoverIcon: { name: "Book", library: "fa" },
     books: [
       {
         title: "Monitoring Docker",

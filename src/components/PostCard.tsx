@@ -1,14 +1,18 @@
 import React from 'react';
 import { type BlogPost } from '../types/collection';
+import { type IconConfig } from '../config';
 import { clsx } from 'clsx';
+import { getIcon } from '../utils/icons';
 
 interface PostCardProps {
     post: BlogPost;
+    hoverIcon: IconConfig;
     className?: string;
 }
 
-export const PostCard: React.FC<PostCardProps> = ({ post, className }) => {
+export const PostCard: React.FC<PostCardProps> = ({ post, hoverIcon, className }) => {
     const hasImage = !!post.coverImage;
+    const HoverIconComponent = getIcon(hoverIcon.library, hoverIcon.name);
 
     // OG images already contain title and overview - show them without overlay
     if (hasImage) {
@@ -22,6 +26,9 @@ export const PostCard: React.FC<PostCardProps> = ({ post, className }) => {
                     className
                 )}
             >
+                <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 text-white p-1 rounded-full">
+                    <HoverIconComponent />
+                </div>
                 <img
                     src={post.coverImage}
                     alt={post.title}
@@ -42,6 +49,9 @@ export const PostCard: React.FC<PostCardProps> = ({ post, className }) => {
                 className
             )}
         >
+            <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 text-white p-1 rounded-full">
+                <HoverIconComponent />
+            </div>
             <div className="flex-1 flex flex-col justify-end">
                 <span className="text-xs font-semibold mb-2 uppercase tracking-wide text-blue-600 dark:text-blue-400">
                     Blog

@@ -1,56 +1,14 @@
 import React from 'react';
-import { type SocialLink } from '../config';
-import * as SiIcons from "react-icons/si";
-import * as LuIcons from "react-icons/lu";
-import * as FaIcons from "react-icons/fa";
+import { type SocialLink, type IconConfig } from '../config';
 import { clsx } from 'clsx';
 import { useTheme } from '../context/ThemeContext';
+import { getIcon } from '../utils/icons';
 
 interface LinkCardProps {
     link: SocialLink;
+    hoverIcon: IconConfig;
     className?: string;
 }
-
-// Map config library/name to actual React Icon component
-const getIcon = (library: string, name: string) => {
-    // Normalize names if necessary, but assuming config matches react-icons export names usually helps.
-    // The User's config has "simple" => "rss", "discogs" etc.
-    // And "lucide" => "Wrench", "Linkedin", "Store".
-
-    // Strategy: Try to find the icon in the respective pack.
-
-    if (library === 'simple') {
-        // Simple Icons usually start with Si... in react-icons/si
-        // e.g. "rss" -> SiRss, "discogs" -> SiDiscogs
-        // User config names are lowercase, need to PascalCase them and prepend Si
-        const pascalName = name.charAt(0).toUpperCase() + name.slice(1);
-        const iconName = `Si${pascalName}` as keyof typeof SiIcons;
-
-        // Special case overrides if needed based on the user's config file inspection
-        if (name === 'lastdotfm') return SiIcons.SiLastdotfm;
-        if (name === 'applemusic') return SiIcons.SiApplemusic;
-
-        return SiIcons[iconName] || SiIcons.SiRss; // Fallback
-    }
-
-    if (library === 'lucide') {
-        // Lucide icons in react-icons/lu are Lu...
-        // e.g. "Wrench" -> LuWrench
-        const iconName = `Lu${name}` as keyof typeof LuIcons;
-        return LuIcons[iconName] || LuIcons.LuLink;
-    }
-
-    if (library === 'fa') {
-        // FontAwesome icons in react-icons/fa are Fa...
-        // e.g. "Linkedin" -> FaLinkedin
-        // User requested imports: import { FaLinkedin } from "react-icons/fa";
-        // So we expect name="Linkedin" -> FaLinkedin
-        const iconName = `Fa${name}` as keyof typeof FaIcons;
-        return FaIcons[iconName] || FaIcons.FaLink;
-    }
-
-    return LuIcons.LuLink;
-};
 
 // Convert hex to RGB values
 const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
@@ -71,8 +29,21 @@ const createLightVariant = (hex: string, lightness: number = 0.12): string => {
     return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${lightness})`;
 };
 
-export const LinkCard: React.FC<LinkCardProps> = ({ link, className }) => {
+// Create a very light/pale version of a color for icon on dark background
+const createPaleColor = (hex: string): string => {
+    const rgb = hexToRgb(hex);
+    if (!rgb) return '#ffffff';
+    // Mix with white to create a pale version
+    const mix = 0.7; // 70% white
+    const r = Math.round(rgb.r + (255 - rgb.r) * mix);
+    const g = Math.round(rgb.g + (255 - rgb.g) * mix);
+    const b = Math.round(rgb.b + (255 - rgb.b) * mix);
+    return `rgb(${r}, ${g}, ${b})`;
+};
+
+export const LinkCard: React.FC<LinkCardProps> = ({ link, hoverIcon, className }) => {
     const IconComponent = getIcon(link.icon.library, link.icon.name);
+    const HoverIconComponent = getIcon(hoverIcon.library, hoverIcon.name);
     const { theme } = useTheme();
     const isDark = theme === 'dark';
 
@@ -120,6 +91,12 @@ export const LinkCard: React.FC<LinkCardProps> = ({ link, className }) => {
                 }
             }}
         >
+            <div
+                className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full"
+                style={{ backgroundColor: isDark ? createPaleColor(brandColor) : brandColor }}
+            >
+                <HoverIconComponent style={{ color: isDark ? brandColor : createPaleColor(brandColor) }} />
+            </div>
             <div className="mb-3 text-4xl transition-transform duration-300 group-hover:-translate-y-1">
                 <IconComponent style={{ color: iconColor }} />
             </div>

@@ -1,19 +1,21 @@
 import React from 'react';
 import { type Record as DiscogsRecord } from '../types/collection';
-import { siteConfig } from '../config';
+import { siteConfig, type IconConfig } from '../config';
 import { clsx } from 'clsx';
-import { FaCompactDisc } from 'react-icons/fa';
+import { getIcon } from '../utils/icons';
 
 interface RecordCardProps {
     record: DiscogsRecord;
+    hoverIcon: IconConfig;
     className?: string;
 }
 
-export const RecordCard: React.FC<RecordCardProps> = ({ record, className }) => {
+export const RecordCard: React.FC<RecordCardProps> = ({ record, hoverIcon, className }) => {
     // Use the high-res image path from the record data, prepended with the asset base URL.
     const imagePath = record.images_uri_release.hi_res || record.images_uri_release.medium;
     const imageUrl = `${siteConfig.recordWall.assetBaseUrl}${imagePath}`;
     const linkUrl = `${siteConfig.recordWall.linkBaseUrl}${record.uri_release}`;
+    const HoverIconComponent = getIcon(hoverIcon.library, hoverIcon.name);
 
     return (
         <a
@@ -26,7 +28,7 @@ export const RecordCard: React.FC<RecordCardProps> = ({ record, className }) => 
             )}
         >
             <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 text-white p-1 rounded-full">
-                <FaCompactDisc />
+                <HoverIconComponent />
             </div>
 
             <img

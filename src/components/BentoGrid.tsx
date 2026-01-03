@@ -122,10 +122,10 @@ export const BentoGrid: React.FC = () => {
           return (
             <div key={item.id} className={clsx("h-full", spanClass)}>
               {item.type === 'profile' && <ProfileCard />}
-              {item.type === 'link' && <LinkCard link={item.data} />}
-              {item.type === 'book' && <BookCard book={item.data} />}
-              {item.type === 'record' && <RecordCard record={item.data} />}
-              {item.type === 'post' && <PostCard post={item.data} />}
+              {item.type === 'link' && <LinkCard link={item.data} hoverIcon={siteConfig.author.hoverIcon} />}
+              {item.type === 'book' && <BookCard book={item.data} hoverIcon={siteConfig.bookShelf.hoverIcon} />}
+              {item.type === 'record' && <RecordCard record={item.data} hoverIcon={siteConfig.recordWall.hoverIcon} />}
+              {item.type === 'post' && <PostCard post={item.data} hoverIcon={siteConfig.blogFeed.hoverIcon} />}
             </div>
           );
         })}

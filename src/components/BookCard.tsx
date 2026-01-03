@@ -1,13 +1,17 @@
 import React from 'react';
-import { type Book } from '../config';
+import { type Book, type IconConfig } from '../config';
 import { clsx } from 'clsx';
+import { getIcon } from '../utils/icons';
 
 interface BookCardProps {
     book: Book;
+    hoverIcon: IconConfig;
     className?: string;
 }
 
-export const BookCard: React.FC<BookCardProps> = ({ book, className }) => {
+export const BookCard: React.FC<BookCardProps> = ({ book, hoverIcon, className }) => {
+    const HoverIconComponent = getIcon(hoverIcon.library, hoverIcon.name);
+
     return (
         <a
             href={book.href || '#'}
@@ -18,6 +22,9 @@ export const BookCard: React.FC<BookCardProps> = ({ book, className }) => {
                 className
             )}
         >
+            <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 text-white p-1 rounded-full">
+                <HoverIconComponent />
+            </div>
             {/* Book container with 3D effect */}
             <div className="relative h-full w-full" style={{ perspective: '1000px' }}>
                 <div

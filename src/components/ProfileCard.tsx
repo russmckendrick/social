@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { siteConfig } from '../config';
 import { clsx } from 'clsx';
 
@@ -25,11 +25,22 @@ interface ProfileCardProps {
 
 export const ProfileCard: React.FC<ProfileCardProps> = ({ className }) => {
   const [avatar, setAvatar] = useState<string>('/sticker-clear.svg');
+  const [showSmoke, setShowSmoke] = useState(false);
+  const [smokeKey, setSmokeKey] = useState(0);
 
-  const pickRandomAvatar = () => {
-    const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
-    setAvatar(`/avatars/${randomAvatar}`);
-  };
+  const triggerSmoke = useCallback(() => {
+    setShowSmoke(true);
+    setSmokeKey(prev => prev + 1);
+    setTimeout(() => setShowSmoke(false), 800);
+  }, []);
+
+  const pickRandomAvatar = useCallback(() => {
+    triggerSmoke();
+    setTimeout(() => {
+      const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
+      setAvatar(`/avatars/${randomAvatar}`);
+    }, 150);
+  }, [triggerSmoke]);
 
   useEffect(() => {
     pickRandomAvatar();
@@ -65,6 +76,19 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ className }) => {
             clipPath: 'inset(0 0 60% 0)'
           }}
         />
+        {/* Smoke puff effect */}
+        {showSmoke && (
+          <div key={smokeKey} className="absolute inset-0 pointer-events-none">
+            <div className="smoke-particle smoke-1" />
+            <div className="smoke-particle smoke-2" />
+            <div className="smoke-particle smoke-3" />
+            <div className="smoke-particle smoke-4" />
+            <div className="smoke-particle smoke-5" />
+            <div className="smoke-particle smoke-6" />
+            <div className="smoke-particle smoke-7" />
+            <div className="smoke-particle smoke-8" />
+          </div>
+        )}
       </button>
       <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 font-display tracking-tight transition-colors duration-300">
         {siteConfig.author.name}

@@ -52,29 +52,51 @@ const getIcon = (library: string, name: string) => {
     return LuIcons.LuLink;
 };
 
+// Convert hex to RGB values
+const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+        ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16),
+        }
+        : null;
+};
+
+// Create a light variant of a color (mix with white)
+const createLightVariant = (hex: string, lightness: number = 0.12): string => {
+    const rgb = hexToRgb(hex);
+    if (!rgb) return '#f5f5f5';
+    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${lightness})`;
+};
+
 export const LinkCard: React.FC<LinkCardProps> = ({ link, className }) => {
     const IconComponent = getIcon(link.icon.library, link.icon.name);
     const { theme } = useTheme();
     const isDark = theme === 'dark';
 
-    // Light mode: soft pastel background with accent text/border
-    // Dark mode: brand color (iconColor) as background with white text/icon
-    const accentMap: Record<string, string> = {
-        blue: 'bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-600',
-        pink: 'bg-pink-50 text-pink-600 hover:bg-pink-100 border border-pink-600',
-        yellow: 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100 border border-yellow-500',
-        green: 'bg-green-50 text-green-600 hover:bg-green-100 border border-green-600',
-        purple: 'bg-purple-50 text-purple-600 hover:bg-purple-100 border border-purple-600',
-        orange: 'bg-orange-50 text-orange-600 hover:bg-orange-100 border border-orange-500',
-        gray: 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-700',
-    };
+    // Light mode: light variant of brand color as background, brand color for text/border
+    // Dark mode: brand color as background with white text/icon
+    const brandColor = link.iconColor;
+    const lightBg = createLightVariant(brandColor, 0.12);
+    const lightBgHover = createLightVariant(brandColor, 0.18);
 
-    const lightModeClass = accentMap[link.accent] || 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-700';
     const darkModeClass = 'text-white border-transparent';
 
-    // In dark mode, use the brand color (iconColor) as background
-    const bgStyle = isDark ? { backgroundColor: link.iconColor } : {};
-    const iconColor = isDark ? '#ffffff' : link.iconColor;
+    // Style object for light mode (brand colors)
+    const lightModeStyle: React.CSSProperties = {
+        backgroundColor: lightBg,
+        color: brandColor,
+        borderColor: brandColor,
+    };
+
+    // Style object for dark mode
+    const darkModeStyle: React.CSSProperties = {
+        backgroundColor: brandColor,
+    };
+
+    const iconColor = isDark ? '#ffffff' : brandColor;
 
     return (
         <a
@@ -82,11 +104,21 @@ export const LinkCard: React.FC<LinkCardProps> = ({ link, className }) => {
             target="_blank"
             rel="noopener noreferrer"
             className={clsx(
-                "flex flex-col items-center justify-center p-6 h-full w-full rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-lg group",
-                isDark ? darkModeClass : lightModeClass,
+                "flex flex-col items-center justify-center p-6 h-full w-full rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-lg group border",
+                isDark && darkModeClass,
                 className
             )}
-            style={bgStyle}
+            style={isDark ? darkModeStyle : lightModeStyle}
+            onMouseEnter={(e) => {
+                if (!isDark) {
+                    e.currentTarget.style.backgroundColor = lightBgHover;
+                }
+            }}
+            onMouseLeave={(e) => {
+                if (!isDark) {
+                    e.currentTarget.style.backgroundColor = lightBg;
+                }
+            }}
         >
             <div className="mb-3 text-4xl transition-transform duration-300 group-hover:-translate-y-1">
                 <IconComponent style={{ color: iconColor }} />

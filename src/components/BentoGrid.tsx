@@ -18,10 +18,9 @@ export const BentoGrid: React.FC = () => {
     const spans: Record<string, { sm: number; md: number; lg: number; xl: number }> = {};
     const gridCols = { sm: 2, md: 4, lg: 6, xl: 8 };
 
-    // Track slot-units used (accounts for multi-row items)
-    // Profile 2x2 = 4 slots (2 cols * 2 rows)
-    // 1x1 = 1 slot, 2x1 = 2 slots, 2x2 = 4 slots
-    let slotUnits = 0;
+    // Track slot-units separately for each breakpoint
+    // This is necessary because headers span different amounts at each breakpoint
+    const slotUnits = { sm: 0, md: 0, lg: 0, xl: 0 };
 
     const getSlotUnits = (item: BentoItem): number => {
       if (item.type === 'profile') return 4; // 2x2 = 4 slots
@@ -37,25 +36,33 @@ export const BentoGrid: React.FC = () => {
 
     for (const item of items) {
       if (item.type === 'header') {
-        // Calculate remaining columns at each breakpoint
-        const calcRemaining = (cols: number) => {
-          const remainder = slotUnits % cols;
+        // Calculate remaining columns at each breakpoint independently
+        const calcRemaining = (cols: number, currentSlots: number) => {
+          const remainder = currentSlots % cols;
           // If at start of row, span full width; otherwise fill remainder
           return remainder === 0 ? cols : cols - remainder;
         };
 
-        spans[item.id] = {
-          sm: calcRemaining(gridCols.sm),
-          md: calcRemaining(gridCols.md),
-          lg: calcRemaining(gridCols.lg),
-          xl: calcRemaining(gridCols.xl),
+        const headerSpan = {
+          sm: calcRemaining(gridCols.sm, slotUnits.sm),
+          md: calcRemaining(gridCols.md, slotUnits.md),
+          lg: calcRemaining(gridCols.lg, slotUnits.lg),
+          xl: calcRemaining(gridCols.xl, slotUnits.xl),
         };
 
-        // After header, add its span to move to next row start
-        // Use the xl span as reference (largest grid)
-        slotUnits += spans[item.id].xl;
+        spans[item.id] = headerSpan;
+
+        // After header, add its span at each breakpoint to move to next row start
+        slotUnits.sm += headerSpan.sm;
+        slotUnits.md += headerSpan.md;
+        slotUnits.lg += headerSpan.lg;
+        slotUnits.xl += headerSpan.xl;
       } else {
-        slotUnits += getSlotUnits(item);
+        const units = getSlotUnits(item);
+        slotUnits.sm += units;
+        slotUnits.md += units;
+        slotUnits.lg += units;
+        slotUnits.xl += units;
       }
     }
 

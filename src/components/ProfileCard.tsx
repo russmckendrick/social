@@ -3,12 +3,9 @@ import { siteConfig } from '../config';
 import { clsx } from 'clsx';
 
 // Dynamically get all avatar SVGs at build time
-// Use glob to discover files, extract filenames, reference from public root
-const avatarFiles = import.meta.glob('/public/avatars/*.svg', { query: '?raw', import: 'default' });
-const avatars = Object.keys(avatarFiles).map(path => {
-  const filename = path.split('/').pop();
-  return `/avatars/${filename}`;
-});
+// Glob discovers files, we only use keys to build paths (files stay in public/)
+const avatarPaths = Object.keys(import.meta.glob('/public/avatars/*.svg', { eager: true }));
+const avatars = avatarPaths.map(path => path.replace('/public', ''));
 
 interface ProfileCardProps {
   size?: '2x2';

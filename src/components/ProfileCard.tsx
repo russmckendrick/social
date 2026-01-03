@@ -2,21 +2,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { siteConfig } from '../config';
 import { clsx } from 'clsx';
 
-// List of available avatars (SVG versions for better quality)
-const avatars = [
-  '3am.svg', 'ai-02.svg', 'ai.svg', 'anon.svg', 'ansible.svg',
-  'arms-folded-02.svg', 'arms-folded.svg', 'arms-to-side.svg', 'azure.svg',
-  'band-01.svg', 'band-02.svg', 'band-03.svg', 'band-04.svg', 'band-05.svg',
-  'book.svg', 'cables.svg', 'cloud.svg', 'coffee-02.svg', 'coffee.svg',
-  'data.svg', 'devops.svg', 'docker.svg', 'founder.svg', 'github.svg',
-  'glitch.svg', 'hacker.svg', 'headphones-off.svg', 'headphones.svg',
-  'hipster.svg', 'hoodie-down.svg', 'hoodie-up.svg', 'jobs.svg',
-  'keyboard.svg', 'laptop-01.svg', 'laptop-02.svg', 'linux.svg', 'nerd.svg',
-  'network-02.svg', 'network.svg', 'pass.svg', 'phone.svg', 'python.svg',
-  'record-01.svg', 'record-03.svg', 'snug.svg', 'speaker.svg',
-  'suit.svg', 'tablet.svg', 'terminal.svg', 'thumbs-down.svg',
-  'thumbs-up.svg', 'watch.svg'
-];
+// Dynamically get all avatar SVGs at build time
+// Use glob to discover files, extract filenames, reference from public root
+const avatarFiles = import.meta.glob('/public/avatars/*.svg', { query: '?raw', import: 'default' });
+const avatars = Object.keys(avatarFiles).map(path => {
+  const filename = path.split('/').pop();
+  return `/avatars/${filename}`;
+});
 
 interface ProfileCardProps {
   size?: '2x2';
@@ -38,7 +30,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ className }) => {
     triggerSmoke();
     setTimeout(() => {
       const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
-      setAvatar(`/avatars/${randomAvatar}`);
+      setAvatar(randomAvatar);
     }, 150);
   }, [triggerSmoke]);
 

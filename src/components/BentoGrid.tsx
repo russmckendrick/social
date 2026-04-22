@@ -1,150 +1,307 @@
-import React, { useMemo } from 'react';
-import { useMixedContent, type BentoItem } from '../hooks/useMixedContent';
+import React, { useRef } from 'react';
+import {
+  LuChevronLeft,
+  LuChevronRight,
+  LuChevronUp,
+  LuChevronDown,
+  LuExternalLink,
+} from 'react-icons/lu';
 import { siteConfig } from '../config';
-import { ProfileCard } from './ProfileCard';
-import { LinkCard } from './LinkCard';
+import { useMixedContent } from '../hooks/useMixedContent';
 import { BookCard } from './BookCard';
-import { RecordCard } from './RecordCard';
+import { LinkCard } from './LinkCard';
 import { PostCard } from './PostCard';
-import { HeaderCard } from './HeaderCard';
-import { clsx } from 'clsx';
+import { ProfileCard } from './ProfileCard';
+import { RecordCard } from './RecordCard';
+
+const getHost = (value?: string) => {
+  if (!value) {
+    return '';
+  }
+
+  try {
+    return new URL(value).hostname.replace(/^www\./, '');
+  } catch {
+    return value;
+  }
+};
 
 export const BentoGrid: React.FC = () => {
-  const { items, loading } = useMixedContent();
+  const { loading, links, books, records, posts } = useMixedContent();
+  const insightsRef = useRef<HTMLDivElement>(null);
+  const recordsRef = useRef<HTMLDivElement>(null);
+  const worksRef = useRef<HTMLDivElement>(null);
 
-  // Pre-calculate header spans to fill remaining row space
-  // Headers come AFTER section items and fill the remainder of that row
-  const headerSpans = useMemo(() => {
-    const spans: Record<string, { sm: number; md: number; lg: number; xl: number }> = {};
-    const gridCols = { sm: 2, md: 4, lg: 6, xl: 8 };
-
-    // Track slot-units separately for each breakpoint
-    // This is necessary because headers span different amounts at each breakpoint
-    const slotUnits = { sm: 0, md: 0, lg: 0, xl: 0 };
-
-    const getSlotUnits = (item: BentoItem): number => {
-      if (item.type === 'profile') return 4; // 2x2 = 4 slots
-      const size = item.size || '1x1';
-      switch (size) {
-        case '2x2': return 4;
-        case '2x1': return 2;
-        case '4x2': return 8;
-        case '4x4': return 16;
-        default: return 1;
-      }
-    };
-
-    for (const item of items) {
-      if (item.type === 'header') {
-        // Calculate remaining columns at each breakpoint independently
-        const calcRemaining = (cols: number, currentSlots: number) => {
-          const remainder = currentSlots % cols;
-          // If at start of row, span full width; otherwise fill remainder
-          return remainder === 0 ? cols : cols - remainder;
-        };
-
-        const headerSpan = {
-          sm: calcRemaining(gridCols.sm, slotUnits.sm),
-          md: calcRemaining(gridCols.md, slotUnits.md),
-          lg: calcRemaining(gridCols.lg, slotUnits.lg),
-          xl: calcRemaining(gridCols.xl, slotUnits.xl),
-        };
-
-        spans[item.id] = headerSpan;
-
-        // After header, add its span at each breakpoint to move to next row start
-        slotUnits.sm += headerSpan.sm;
-        slotUnits.md += headerSpan.md;
-        slotUnits.lg += headerSpan.lg;
-        slotUnits.xl += headerSpan.xl;
-      } else {
-        const units = getSlotUnits(item);
-        slotUnits.sm += units;
-        slotUnits.md += units;
-        slotUnits.lg += units;
-        slotUnits.xl += units;
-      }
-    }
-
-    return spans;
-  }, [items]);
+  const blogLink = links.find((link) => link.type === 'blog') ?? links[0];
+  const featuredPosts = posts.slice(0, 8);
+  const featuredRecords = records.slice(0, 18);
+  const featuredBooks = [...books].reverse();
+  const subtitleHosts = [getHost(blogLink?.href), getHost(siteConfig.recordWall.linkBaseUrl)]
+    .filter(Boolean)
+    .join(' / ');
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-gray-100"></div>
+      <div className="flex min-h-screen items-center justify-center bg-[var(--dashboard-bg)] px-6">
+        <div className="glass-card rounded-xl px-8 py-6 text-sm uppercase tracking-[0.24em] text-zinc-400">
+          Loading dashboard
+        </div>
       </div>
     );
   }
 
+  const scrollInsights = (direction: 'left' | 'right') => {
+    const container = insightsRef.current;
+
+    if (!container) {
+      return;
+    }
+
+    const amount = Math.min(420, Math.round(container.clientWidth * 0.82));
+    container.scrollBy({
+      left: direction === 'left' ? -amount : amount,
+      behavior: 'smooth',
+    });
+  };
+
+  const scrollWorks = (direction: 'up' | 'down') => {
+    const container = worksRef.current;
+
+    if (!container) {
+      return;
+    }
+
+    const amount = Math.min(280, Math.round(container.clientHeight * 0.78));
+    container.scrollBy({
+      top: direction === 'up' ? -amount : amount,
+      behavior: 'smooth',
+    });
+  };
+
+  const scrollRecords = (direction: 'up' | 'down') => {
+    const container = recordsRef.current;
+
+    if (!container) {
+      return;
+    }
+
+    const amount = Math.min(280, Math.round(container.clientHeight * 0.78));
+    container.scrollBy({
+      top: direction === 'up' ? -amount : amount,
+      behavior: 'smooth',
+    });
+  };
+
   return (
-    <div className="page-wrapper max-w-[1600px] mx-auto p-4 md:p-8">
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 auto-rows-[minmax(160px,auto)] grid-flow-dense">
-        {items.map((item: BentoItem) => {
-          // Special handling for headers - use pre-calculated responsive spans via CSS custom properties
-          if (item.type === 'header') {
-            const spans = headerSpans[item.id] || { sm: 2, md: 4, lg: 6, xl: 8 };
-            return (
-              <div
-                key={item.id}
-                className="header-cell h-full row-span-1"
-                style={{
-                  '--span-sm': spans.sm,
-                  '--span-md': spans.md,
-                  '--span-lg': spans.lg,
-                  '--span-xl': spans.xl,
-                } as React.CSSProperties}
-              >
-                <HeaderCard text={item.data.text} color={item.data.color} />
+    <div className="min-h-screen bg-[var(--dashboard-bg)] text-[var(--dashboard-fg)]">
+      <main className="mx-auto max-w-[1440px] px-4 py-6 lg:px-6 lg:py-8">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-6">
+          <aside className="space-y-4 lg:col-span-3">
+            <ProfileCard subtitle={subtitleHosts || 'russ.cloud / russ.fm'} />
+
+            <div className="glass-card overflow-hidden rounded-xl border border-[var(--dashboard-border)]">
+              <div className="border-b border-[var(--dashboard-border)] bg-[var(--dashboard-frame)]">
+                <div className="relative flex items-center gap-3 border-b border-[var(--dashboard-border)] bg-[var(--dashboard-frame-strong)] px-4 py-2.5">
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+                  </div>
+
+                  <div className="pointer-events-none absolute left-1/2 top-1/2 w-[56%] min-w-0 -translate-x-1/2 -translate-y-1/2">
+                    <div className="flex min-w-0 items-center justify-center px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--dashboard-subtle)]">
+                      <span className="truncate">Social Links</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-            );
-          }
-
-          // Regular items with responsive sizing
-          // On mobile (2 cols): most items should be 1x1 or full width
-          // On tablet (4 cols): 2x2 items are fine
-          // On desktop (6-8 cols): original sizes
-          let spanClass = "col-span-1 row-span-1 transition-all duration-300";
-          if (item.size === "2x2") {
-            // 2x2 stays 2x2 on all breakpoints (fits in 2-col mobile grid)
-            spanClass = "col-span-2 row-span-2 transition-all duration-300";
-          } else if (item.size === "2x1") {
-            // 2x1 stays 2x1 on all breakpoints
-            spanClass = "col-span-2 row-span-1 transition-all duration-300";
-          } else if (item.size === "4x2") {
-            // 4x2 becomes 2x2 on mobile/tablet, full size on lg+
-            spanClass = "col-span-2 row-span-2 lg:col-span-4 lg:row-span-2 transition-all duration-300";
-          } else if (item.size === "4x4") {
-            // 4x4 becomes 2x2 on mobile, 4x4 on lg+
-            spanClass = "col-span-2 row-span-2 lg:col-span-4 lg:row-span-4 transition-all duration-300";
-          }
-
-          return (
-            <div key={item.id} className={clsx("h-full", spanClass)}>
-              {item.type === 'profile' && <ProfileCard />}
-              {item.type === 'link' && <LinkCard link={item.data} hoverIcon={siteConfig.author.hoverIcon} />}
-              {item.type === 'book' && <BookCard book={item.data} hoverIcon={siteConfig.bookShelf.hoverIcon} />}
-              {item.type === 'record' && <RecordCard record={item.data} hoverIcon={siteConfig.recordWall.hoverIcon} />}
-              {item.type === 'post' && <PostCard post={item.data} hoverIcon={siteConfig.blogFeed.hoverIcon} />}
+              <div className="grid grid-cols-2 gap-px bg-[var(--dashboard-border)] md:grid-cols-3 lg:grid-cols-1">
+                {links.map((link) => (
+                  <LinkCard key={link.type} link={link} />
+                ))}
+              </div>
             </div>
-          );
-        })}
+          </aside>
 
-        {/* Footer - spans full width at all breakpoints */}
-        <div className="col-span-2 md:col-span-4 lg:col-span-6 xl:col-span-8 py-8 text-center text-gray-400 dark:text-gray-500 text-sm transition-colors duration-300">
-          <p>{siteConfig.footer.text}</p>
-          {siteConfig.footer.showSource && siteConfig.footer.sourceUrl && (
+          <div className="space-y-4 lg:col-span-9 lg:space-y-6">
+            <section className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="font-display text-lg font-semibold">
+                  Latest Blog Posts
+                </h2>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => scrollInsights('left')}
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--dashboard-border)] bg-[var(--dashboard-panel-strong)] text-[var(--dashboard-subtle)] hover:border-[var(--dashboard-border-strong)] hover:text-[var(--dashboard-primary)]"
+                    aria-label="Scroll latest insights left"
+                  >
+                    <LuChevronLeft className="text-sm" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollInsights('right')}
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--dashboard-border)] bg-[var(--dashboard-panel-strong)] text-[var(--dashboard-subtle)] hover:border-[var(--dashboard-border-strong)] hover:text-[var(--dashboard-primary)]"
+                    aria-label="Scroll latest insights right"
+                  >
+                    <LuChevronRight className="text-sm" />
+                  </button>
+                  <a
+                    href={siteConfig.blogFeed.linkBaseUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-[var(--dashboard-subtle)] transition-colors hover:text-[var(--dashboard-primary)]"
+                    aria-label="Open all blog posts"
+                  >
+                    <LuExternalLink />
+                  </a>
+                </div>
+              </div>
+
+              <div
+                ref={insightsRef}
+                className="latest-insights-scroll flex gap-4 overflow-x-auto pb-3 pr-2 snap-x snap-mandatory"
+              >
+                {featuredPosts.map((post) => (
+                  <div
+                    key={post.link}
+                    className="min-w-[320px] snap-start sm:min-w-[360px] lg:min-w-[382px]"
+                  >
+                    <PostCard post={post} />
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:gap-6">
+              <section className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-display text-base font-semibold">
+                    Recently Added
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => scrollRecords('up')}
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--dashboard-border)] bg-[var(--dashboard-panel-strong)] text-[var(--dashboard-subtle)] hover:border-[var(--dashboard-border-strong)] hover:text-[var(--dashboard-primary)]"
+                      aria-label="Scroll recently added up"
+                    >
+                      <LuChevronUp className="text-sm" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => scrollRecords('down')}
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--dashboard-border)] bg-[var(--dashboard-panel-strong)] text-[var(--dashboard-subtle)] hover:border-[var(--dashboard-border-strong)] hover:text-[var(--dashboard-primary)]"
+                      aria-label="Scroll recently added down"
+                    >
+                      <LuChevronDown className="text-sm" />
+                    </button>
+                    <a
+                      href={siteConfig.author.links.find((link) => link.type === 'records')?.href ?? siteConfig.recordWall.linkBaseUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-[var(--dashboard-subtle)] transition-colors hover:text-[var(--dashboard-primary)]"
+                      aria-label="Open record collection"
+                    >
+                      <LuExternalLink />
+                    </a>
+                  </div>
+                </div>
+
+                <div
+                  ref={recordsRef}
+                  className="published-works-scroll glass-card grid max-h-[520px] grid-cols-2 content-start gap-4 overflow-y-auto rounded-xl p-4 sm:grid-cols-3"
+                >
+                  {featuredRecords.map((record) => (
+                    <RecordCard key={record.uri_release} record={record} />
+                  ))}
+                </div>
+              </section>
+
+              <section className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-display text-base font-semibold">
+                    Published Works
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => scrollWorks('up')}
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--dashboard-border)] bg-[var(--dashboard-panel-strong)] text-[var(--dashboard-subtle)] hover:border-[var(--dashboard-border-strong)] hover:text-[var(--dashboard-primary)]"
+                      aria-label="Scroll published works up"
+                    >
+                      <LuChevronUp className="text-sm" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => scrollWorks('down')}
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--dashboard-border)] bg-[var(--dashboard-panel-strong)] text-[var(--dashboard-subtle)] hover:border-[var(--dashboard-border-strong)] hover:text-[var(--dashboard-primary)]"
+                      aria-label="Scroll published works down"
+                    >
+                      <LuChevronDown className="text-sm" />
+                    </button>
+                    <a
+                      href={siteConfig.author.links.find((link) => link.type === 'packt')?.href ?? siteConfig.author.links.find((link) => link.type === 'amazon')?.href ?? '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-[var(--dashboard-subtle)] transition-colors hover:text-[var(--dashboard-primary)]"
+                      aria-label="Open published works links"
+                    >
+                      <LuExternalLink />
+                    </a>
+                  </div>
+                </div>
+
+                <div
+                  ref={worksRef}
+                  className="published-works-scroll glass-card grid max-h-[520px] grid-cols-2 content-start gap-4 overflow-y-auto rounded-xl p-4"
+                >
+                  {featuredBooks.map((book) => (
+                    <BookCard key={book.title} book={book} variant="grid" />
+                  ))}
+                </div>
+              </section>
+            </div>
+
+          </div>
+        </div>
+      </main>
+
+      <footer className="mt-8 border-t border-[var(--dashboard-border)] py-8 opacity-80">
+        <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-4 px-6 md:flex-row">
+          <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--dashboard-subtle)]">
+            {siteConfig.footer.text}
+          </p>
+          <div className="flex gap-6 text-[10px] font-bold uppercase tracking-tighter text-[var(--dashboard-subtle)]">
             <a
-              href={siteConfig.footer.sourceUrl}
+              className="transition-colors hover:text-[var(--dashboard-primary)]"
+              href={siteConfig.blogFeed.feedUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block mt-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
             >
-              View Source →
+              RSS Feed
             </a>
-          )}
+            {siteConfig.footer.showSource && siteConfig.footer.sourceUrl && (
+              <a
+                className="transition-colors hover:text-[var(--dashboard-primary)]"
+                href={siteConfig.footer.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Source
+              </a>
+            )}
+            <a
+              className="transition-colors hover:text-[var(--dashboard-primary)]"
+              href={siteConfig.recordWall.linkBaseUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Collection
+            </a>
+          </div>
         </div>
-      </div>
+      </footer>
     </div>
   );
 };

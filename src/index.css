@@ -1,159 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
-
 @theme {
-  --font-display: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-sans: 'Inter', sans-serif;
+}
+
+:root {
+  --dashboard-bg: #f6f8fa;
+  --dashboard-bg-subtle: #eef3f8;
+  --dashboard-panel: rgba(255, 255, 255, 0.9);
+  --dashboard-panel-strong: #ffffff;
+  --dashboard-fg: #1f2328;
+  --dashboard-muted: #59636e;
+  --dashboard-subtle: #6e7781;
+  --dashboard-primary: #0969da;
+  --dashboard-primary-soft: rgba(9, 105, 218, 0.1);
+  --dashboard-border: rgba(208, 215, 222, 0.9);
+  --dashboard-border-strong: rgba(208, 215, 222, 1);
+  --dashboard-shadow: 0 18px 40px rgba(31, 35, 40, 0.08);
+  --dashboard-frame: #f6f8fa;
+  --dashboard-frame-strong: #ffffff;
+  --dashboard-control: #8c959f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--dashboard-bg);
 }
 
 body {
-  @apply bg-gray-50 text-gray-900 font-sans antialiased transition-colors duration-300;
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at top center, rgba(9, 105, 218, 0.08), transparent 26%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(246, 248, 250, 0.94)),
+    var(--dashboard-bg);
+  color: var(--dashboard-fg);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-html.dark body {
-  @apply bg-gray-900 text-gray-100;
+a,
+button {
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease,
+    opacity 180ms ease;
 }
 
-/* Responsive header spans - uses CSS custom properties set by JS */
-.header-cell {
-  grid-column: span var(--span-sm, 2);
+button {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
 }
 
-@media (min-width: 768px) {
-  .header-cell {
-    grid-column: span var(--span-md, 4);
-  }
+#root {
+  min-height: 100vh;
 }
 
-@media (min-width: 1024px) {
-  .header-cell {
-    grid-column: span var(--span-lg, 6);
-  }
+.glass-card {
+  background: var(--dashboard-panel);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--dashboard-border);
+  box-shadow: var(--dashboard-shadow);
 }
 
-@media (min-width: 1280px) {
-  .header-cell {
-    grid-column: span var(--span-xl, 8);
-  }
-}
-
-/* Custom Scrollbar for better aesthetics */
 ::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-transparent;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded-full hover:bg-gray-400 transition-colors;
+  background-color: rgba(9, 105, 218, 0.18);
+  border-radius: 999px;
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  @apply bg-gray-600 hover:bg-gray-500;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-/* Smoke puff animation for avatar */
-@keyframes smoke-puff {
-  0% {
-    opacity: 0.9;
-    transform: translate(-50%, -50%) scale(0.3);
-  }
-  50% {
-    opacity: 0.6;
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(2);
-  }
+.latest-insights-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(9, 105, 218, 0.18) transparent;
 }
 
-@keyframes smoke-rise {
-  0% {
-    opacity: 0.8;
-    transform: translate(-50%, 0) scale(0.4);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -60px) scale(1.5);
-  }
-}
-
-.smoke-particle {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(180, 180, 180, 0.8) 0%, rgba(200, 200, 200, 0.4) 40%, transparent 70%);
-  pointer-events: none;
-}
-
-.dark .smoke-particle {
-  background: radial-gradient(circle, rgba(100, 100, 100, 0.8) 0%, rgba(80, 80, 80, 0.4) 40%, transparent 70%);
-}
-
-/* Central burst particles */
-.smoke-1 {
-  width: 80px;
-  height: 80px;
-  left: 50%;
-  top: 60%;
-  animation: smoke-puff 0.6s ease-out forwards;
-}
-
-.smoke-2 {
-  width: 60px;
-  height: 60px;
-  left: 30%;
-  top: 50%;
-  animation: smoke-puff 0.5s ease-out 0.05s forwards;
-}
-
-.smoke-3 {
-  width: 70px;
-  height: 70px;
-  left: 70%;
-  top: 55%;
-  animation: smoke-puff 0.55s ease-out 0.08s forwards;
-}
-
-.smoke-4 {
-  width: 50px;
-  height: 50px;
-  left: 40%;
-  top: 70%;
-  animation: smoke-puff 0.5s ease-out 0.1s forwards;
-}
-
-.smoke-5 {
-  width: 55px;
-  height: 55px;
-  left: 60%;
-  top: 65%;
-  animation: smoke-puff 0.55s ease-out 0.03s forwards;
-}
-
-/* Rising smoke wisps */
-.smoke-6 {
-  width: 40px;
-  height: 40px;
-  left: 35%;
-  top: 40%;
-  animation: smoke-rise 0.7s ease-out forwards;
-}
-
-.smoke-7 {
-  width: 45px;
-  height: 45px;
-  left: 50%;
-  top: 35%;
-  animation: smoke-rise 0.75s ease-out 0.1s forwards;
-}
-
-.smoke-8 {
-  width: 35px;
-  height: 35px;
-  left: 65%;
-  top: 45%;
-  animation: smoke-rise 0.65s ease-out 0.05s forwards;
+.published-works-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(9, 105, 218, 0.18) transparent;
 }

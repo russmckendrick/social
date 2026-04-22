@@ -1,50 +1,53 @@
 import React from 'react';
+import { siteConfig } from '../config';
 import { type Record as DiscogsRecord } from '../types/collection';
-import { siteConfig, type IconConfig } from '../config';
-import { clsx } from 'clsx';
-import { getIcon } from '../utils/icons';
 
 interface RecordCardProps {
-    record: DiscogsRecord;
-    hoverIcon: IconConfig;
-    className?: string;
+  record: DiscogsRecord;
 }
 
-export const RecordCard: React.FC<RecordCardProps> = ({ record, hoverIcon, className }) => {
-    // Use the high-res image path from the record data, prepended with the asset base URL.
-    const imagePath = record.images_uri_release.hi_res || record.images_uri_release.medium;
-    const imageUrl = `${siteConfig.recordWall.assetBaseUrl}${imagePath}`;
-    const linkUrl = `${siteConfig.recordWall.linkBaseUrl}${record.uri_release}`;
-    const HoverIconComponent = getIcon(hoverIcon.library, hoverIcon.name);
+const buildImageUrl = (record: DiscogsRecord) => {
+  const imagePath =
+    record.images_uri_release.hi_res || record.images_uri_release.medium;
 
-    return (
-        <a
-            href={linkUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={clsx(
-                "relative block h-full w-full rounded-2xl overflow-hidden group border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 transition-colors duration-300",
-                className
-            )}
-        >
-            <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 text-white p-1 rounded-full">
-                <HoverIconComponent />
-            </div>
+  return `${siteConfig.recordWall.assetBaseUrl}${imagePath}`;
+};
 
-            <img
-                src={imageUrl}
-                alt={`${record.release_name} by ${record.release_artist}`}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                loading="lazy"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-purple-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                <h4 className="text-white font-bold text-sm font-display leading-tight line-clamp-1">
-                    {record.release_name}
-                </h4>
-                <p className="text-purple-100 text-xs line-clamp-1">
-                    {record.release_artist}
-                </p>
-            </div>
-        </a>
-    );
+const buildRecordUrl = (record: DiscogsRecord) => {
+  return `${siteConfig.recordWall.linkBaseUrl}${record.uri_release}`;
+};
+
+export const RecordCard: React.FC<RecordCardProps> = ({ record }) => {
+  const imageUrl = buildImageUrl(record);
+  const linkUrl = buildRecordUrl(record);
+
+  return (
+    <a
+      href={linkUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group block h-full"
+      aria-label={`Open record: ${record.release_name} by ${record.release_artist}`}
+    >
+      <div className="flex h-full flex-col overflow-hidden rounded-xl border border-[var(--dashboard-border)] bg-[var(--dashboard-panel-strong)] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--dashboard-border-strong)] hover:shadow-[0_18px_34px_rgba(31,35,40,0.1)]">
+        <div className="aspect-square overflow-hidden border-b border-[var(--dashboard-border)] bg-[var(--dashboard-bg-subtle)]">
+          <img
+            src={imageUrl}
+            alt={`${record.release_name} by ${record.release_artist}`}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.05]"
+            loading="lazy"
+          />
+        </div>
+
+        <div className="flex flex-1 flex-col p-4">
+          <h4 className="line-clamp-2 text-sm font-bold leading-snug text-[var(--dashboard-fg)]">
+            {record.release_name}
+          </h4>
+          <p className="mt-2 line-clamp-2 text-[10px] uppercase tracking-[0.24em] text-[var(--dashboard-subtle)]">
+            {record.release_artist}
+          </p>
+        </div>
+      </div>
+    </a>
+  );
 };

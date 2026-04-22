@@ -14,6 +14,7 @@ export interface Record {
   release_name: string;
   release_artist: string;
   date_release_year: string;
+  date_added?: string;
   genre_names: string[];
   artists: Artist[];
   images_uri_release: Images;
@@ -29,4 +30,6 @@ export interface BlogPost {
   description: string;
   content?: string;
   coverImage?: string;
+  categories?: string[];
+  readTimeMinutes?: number;
 }

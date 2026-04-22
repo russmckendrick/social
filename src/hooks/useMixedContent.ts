@@ -1,227 +1,163 @@
-import { useState, useEffect } from 'react';
-import { siteConfig, type SocialLink, type Book, type CardSize, type AccentColor, type SectionType } from '../config';
-import type { Record as DiscogsRecord, BlogPost } from '../types/collection';
+import { useEffect, useState } from 'react';
+import { siteConfig, type Book, type SocialLink } from '../config';
+import type { BlogPost, Record as DiscogsRecord } from '../types/collection';
 
-// Define a union type for all possible items in the grid
-export type BentoItemType = 'profile' | 'link' | 'book' | 'record' | 'post' | 'header';
+const BLOG_NAMESPACE = 'https://www.russ.cloud/rss/ns';
 
-export interface BaseBentoItem {
-    id: string;
-    type: BentoItemType;
-    // Size can be utilized by the grid layout.
-    // Most items are 1x1. Profile is 2x2.
-    size?: CardSize;
+interface MixedContentState {
+  links: SocialLink[];
+  books: Book[];
+  records: DiscogsRecord[];
+  posts: BlogPost[];
+  contactHref?: string;
+  loading: boolean;
 }
 
-export interface ProfileItem extends BaseBentoItem {
-    type: 'profile';
-}
+const initialState: MixedContentState = {
+  links: siteConfig.author.links,
+  books: siteConfig.bookShelf.books,
+  records: [],
+  posts: [],
+  contactHref: undefined,
+  loading: true,
+};
 
-export interface LinkItem extends BaseBentoItem {
-    type: 'link';
-    data: SocialLink;
-}
+const fetchWithProxyFallback = async (url: string) => {
+  const proxiedResponse = await fetch(
+    `/api/proxy?url=${encodeURIComponent(url)}`,
+  ).catch(() => null);
 
-export interface BookItem extends BaseBentoItem {
-    type: 'book';
-    data: Book;
-}
+  if (proxiedResponse?.ok) {
+    return proxiedResponse;
+  }
 
-export interface RecordItem extends BaseBentoItem {
-    type: 'record';
-    data: DiscogsRecord;
-}
+  return fetch(url);
+};
 
-export interface PostItem extends BaseBentoItem {
-    type: 'post';
-    data: BlogPost;
-}
+const stripHtml = (value: string) => {
+  if (!value) {
+    return '';
+  }
 
-export interface HeaderItem extends BaseBentoItem {
-    type: 'header';
-    data: {
-        text: string;
-        color?: AccentColor;
-        section: SectionType;
-    };
-}
+  const parsed = new DOMParser().parseFromString(value, 'text/html');
+  return parsed.body.textContent?.replace(/\s+/g, ' ').trim() ?? '';
+};
 
-export type BentoItem = ProfileItem | LinkItem | BookItem | RecordItem | PostItem | HeaderItem;
+const calculateReadTimeMinutes = (value: string) => {
+  const words = stripHtml(value).split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 200));
+};
 
-// Shuffle function removed as requested
+const extractEmail = (value: string) => {
+  const match = value.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+  return match?.[0];
+};
+
+const getNamespacedText = (
+  element: Element,
+  namespace: string,
+  localName: string,
+) => {
+  return (
+    element.getElementsByTagNameNS(namespace, localName)[0]?.textContent?.trim() ?? ''
+  );
+};
 
 export function useMixedContent() {
-    const [items, setItems] = useState<BentoItem[]>([]);
-    const [loading, setLoading] = useState(true);
+  const [content, setContent] = useState<MixedContentState>(initialState);
 
-    useEffect(() => {
-        let isMounted = true;
+  useEffect(() => {
+    let isActive = true;
 
-        const loadData = async () => {
-            try {
-                // ... (existing code omitted for brevity in instruction, but kept in mind)
-                // Logic flow: try { ... } catch (err) { ... }
-                // The previous tool call output showed `} } catch`. I need to replace that block.
+    const loadContent = async () => {
+      let records: DiscogsRecord[] = [];
+      let posts: BlogPost[] = [];
+      let contactHref: string | undefined;
 
+      try {
+        const recordResponse = await fetchWithProxyFallback(
+          siteConfig.recordWall.collectionUrl,
+        );
 
-                // 1. Static Content (Links & Books)
-                const linkItems: LinkItem[] = siteConfig.author.links.map((link, i) => ({
-                    id: `link-${link.type}-${i}`,
-                    type: 'link',
-                    size: link.size, // Use size from config
-                    data: link,
-                }));
+        if (recordResponse.ok) {
+          const recordData: DiscogsRecord[] = await recordResponse.json();
+          records = recordData;
+        }
+      } catch (error) {
+        console.error('Failed to load records', error);
+      }
 
-                const bookItems: BookItem[] = siteConfig.bookShelf.books.map((book, i) => ({
-                    id: `book-${i}`,
-                    type: 'book',
-                    size: siteConfig.bookShelf.itemSize,
-                    data: book,
-                }));
+      try {
+        const feedResponse = await fetchWithProxyFallback(siteConfig.blogFeed.feedUrl);
 
-                // 2. Fetch Records
-                let recordItems: RecordItem[] = [];
-                try {
-                    // Try proxy first, then direct
-                    const recordUrl = siteConfig.recordWall.collectionUrl;
-                    let res = await fetch(`/api/proxy?url=${encodeURIComponent(recordUrl)}`).catch(() => null);
-                    if (!res || !res.ok) {
-                        res = await fetch(recordUrl);
-                    }
-                    if (res && res.ok) {
-                        const data: DiscogsRecord[] = await res.json();
-                        // Featured record logic removed. All records 1x1.
-                        recordItems = data.slice(0, siteConfig.recordWall.recordCount).map((record) => ({
-                            id: `record-${record.uri_release}`,
-                            type: 'record',
-                            size: siteConfig.recordWall.itemSize,
-                            data: record,
-                        }));
-                    }
-                } catch (error) {
-                    console.error("Failed to load records", error);
-                }
+        if (feedResponse.ok) {
+          const xmlText = await feedResponse.text();
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+          const feedItems = Array.from(xmlDoc.querySelectorAll('item'));
+          const managingEditor =
+            xmlDoc.querySelector('channel > managingEditor')?.textContent?.trim() ?? '';
 
-                // 3. Fetch Blog Posts
-                let postItems: PostItem[] = [];
-                try {
-                    const feedUrl = siteConfig.blogFeed.feedUrl;
-                    let res = await fetch(`/api/proxy?url=${encodeURIComponent(feedUrl)}`).catch(() => null);
-                    if (!res || !res.ok) {
-                        res = await fetch(feedUrl);
-                    }
-                    if (res && res.ok) {
-                        const xmlText = await res.text();
-                        const parser = new DOMParser();
-                        const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-                        const feedItems = Array.from(xmlDoc.querySelectorAll('item'));
+          const email = extractEmail(managingEditor);
+          contactHref = email ? `mailto:${email}` : undefined;
 
-                        // Featured post logic removed. All posts 1x1.
-                        postItems = feedItems.slice(0, siteConfig.blogFeed.postCount).map((item, i) => {
-                            const link = item.querySelector('link')?.textContent || '';
-                            // User requested Open Graph image pattern: url-without-slash + -og.png
-                            // Example: https://.../edition/ -> https://.../edition-og.png
-                            const cleanLink = link.replace(/\/$/, '');
-                            const coverImage = cleanLink ? `${cleanLink}-og.png` : undefined;
+          posts = feedItems.map((item) => {
+            const link = item.querySelector('link')?.textContent?.trim() ?? '';
+            const cleanLink = link.replace(/\/$/, '');
+            const contentValue =
+              item.querySelector('content\\:encoded')?.textContent?.trim() ??
+              item.querySelector('description')?.textContent?.trim() ??
+              '';
+            const categories = Array.from(item.querySelectorAll('category'))
+              .map((category) => category.textContent?.trim() ?? '')
+              .filter(Boolean);
+            const readingTimeValue = Number.parseInt(
+              getNamespacedText(item, BLOG_NAMESPACE, 'readingTime'),
+              10,
+            );
+            const coverImage =
+              getNamespacedText(item, BLOG_NAMESPACE, 'coverImage') ||
+              getNamespacedText(item, BLOG_NAMESPACE, 'ogImage') ||
+              (cleanLink ? `${cleanLink}-og.png` : '');
 
-                            return {
-                                id: `post-${i}`,
-                                type: 'post',
-                                size: siteConfig.blogFeed.itemSize,
-                                data: {
-                                    title: item.querySelector('title')?.textContent || '',
-                                    link,
-                                    pubDate: item.querySelector('pubDate')?.textContent || '',
-                                    description: item.querySelector('description')?.textContent || '',
-                                    coverImage
-                                }
-                            };
-                        });
-                    }
-                } catch (error) {
-                    console.error("Failed to load blog posts", error);
-                }
+            return {
+              title: item.querySelector('title')?.textContent?.trim() ?? '',
+              link,
+              pubDate: item.querySelector('pubDate')?.textContent?.trim() ?? '',
+              description: item.querySelector('description')?.textContent?.trim() ?? '',
+              content: contentValue,
+              categories,
+              readTimeMinutes: Number.isFinite(readingTimeValue)
+                ? Math.max(1, readingTimeValue)
+                : calculateReadTimeMinutes(contentValue),
+              coverImage: coverImage || undefined,
+            };
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load blog posts', error);
+      }
 
-                if (isMounted) {
-                    // 4. Construct Final List based on sectionOrder from config
-                    // Headers come AFTER their section items to fill remaining row space
-                    const profileItem: ProfileItem = {
-                        id: 'profile-main',
-                        type: 'profile',
-                        size: '2x2'
-                    };
+      if (!isActive) {
+        return;
+      }
 
-                    const finalItems: BentoItem[] = [profileItem];
+      setContent({
+        links: siteConfig.author.links,
+        books: siteConfig.bookShelf.books,
+        records,
+        posts,
+        contactHref,
+        loading: false,
+      });
+    };
 
-                    // Build sections based on configured order
-                    // Headers appear at the END of each section to cap off the row and introduce the next
-                    const sectionOrder = siteConfig.sectionOrder;
+    loadContent();
 
-                    // Helper to get header config for a section
-                    const getHeaderConfig = (sectionType: SectionType) => {
-                        switch (sectionType) {
-                            case 'records':
-                                return { config: siteConfig.recordWall.header, id: 'header-records' };
-                            case 'blog':
-                                return { config: siteConfig.blogFeed.header, id: 'header-blog' };
-                            case 'books':
-                                return { config: siteConfig.bookShelf.header, id: 'header-books' };
-                            default:
-                                return null;
-                        }
-                    };
+    return () => {
+      isActive = false;
+    };
+  }, []);
 
-                    // Helper to get items for a section
-                    const getSectionItems = (sectionType: SectionType) => {
-                        switch (sectionType) {
-                            case 'links': return linkItems;
-                            case 'records': return recordItems;
-                            case 'blog': return postItems;
-                            case 'books': return bookItems;
-                            default: return [];
-                        }
-                    };
-
-                    for (let i = 0; i < sectionOrder.length; i++) {
-                        const section = sectionOrder[i];
-                        const nextSection = sectionOrder[i + 1];
-
-                        // Add section items
-                        finalItems.push(...getSectionItems(section));
-
-                        // Add next section's header after current section (to cap the row)
-                        if (nextSection) {
-                            const headerInfo = getHeaderConfig(nextSection);
-                            if (headerInfo && headerInfo.config.enabled) {
-                                finalItems.push({
-                                    id: headerInfo.id,
-                                    type: 'header',
-                                    size: headerInfo.config.size,
-                                    data: {
-                                        text: headerInfo.config.text,
-                                        color: headerInfo.config.color,
-                                        section: nextSection
-                                    }
-                                });
-                            }
-                        }
-                    }
-
-                    setItems(finalItems);
-                }
-            } catch (err) {
-                console.error("General error loading content", err);
-            } finally {
-                if (isMounted) setLoading(false);
-            }
-        };
-
-        loadData();
-
-        return () => {
-            isMounted = false;
-        };
-    }, []);
-
-    return { items, loading };
+  return content;
 }

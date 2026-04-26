@@ -142,6 +142,11 @@ public/avatars/            # 50+ avatar SVGs
 
 ## Styling Notes
 
+### Design System
+Read `DESIGN.md` before making visual or UX changes. It captures the current design system tokens and rationale for colors, typography, spacing, shapes, elevation, and component patterns.
+
+When changing the site's visual language, update `DESIGN.md` in the same change so future agents have the current source of truth.
+
 ### Tailwind CSS v4
 Uses `@import "tailwindcss"` syntax. Custom styles in `index.css`.
 

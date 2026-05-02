@@ -6,3 +6,5 @@ export { RecordCard } from './RecordCard';
 export { PostCard } from './PostCard';
 export { HeaderCard } from './HeaderCard';
 export { ThemeSwitcher } from './ThemeSwitcher';
+export { GitHubSection } from './GitHubSection';
+export { RepoCard } from './RepoCard';

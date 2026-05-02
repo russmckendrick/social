@@ -8,7 +8,7 @@ export interface Book {
 export type IconLibrary = 'simple' | 'lucide' | 'fa';
 export type CardSize = '1x1' | '2x1' | '2x2' | '4x2' | '4x4';
 export type AccentColor = 'blue' | 'pink' | 'yellow' | 'green' | 'purple' | 'orange' | 'gray';
-export type SectionType = 'links' | 'blog' | 'books' | 'records';
+export type SectionType = 'links' | 'blog' | 'books' | 'records' | 'github';
 
 export interface HeaderConfig {
   enabled: boolean;
@@ -73,11 +73,15 @@ export interface SiteConfig {
     header: HeaderConfig;
     hoverIcon: IconConfig;
   };
+  github: {
+    username: string;
+    pinnedReposApi: string;
+  };
 }
 
 export const siteConfig: SiteConfig = {
   title: "Russ McKendrick",
-  sectionOrder: ['links', 'blog', 'books', 'records'],
+  sectionOrder: ['links', 'blog', 'books', 'records', 'github'],
   footer: {
     text: "Made with ☕ and mass mass mass amounts of AI",
     showSource: true,
@@ -358,5 +362,10 @@ export const siteConfig: SiteConfig = {
         spineColor: "#1e3a5f"
       }
     ]
+  },
+  github: {
+    username: "russmckendrick",
+    pinnedReposApi: "https://gh-pinned-repos.egoist.dev/?username=russmckendrick"
   }
 };
+

@@ -13,6 +13,7 @@ import { LinkCard } from './LinkCard';
 import { PostCard } from './PostCard';
 import { ProfileCard } from './ProfileCard';
 import { RecordCard } from './RecordCard';
+import { GitHubSection } from './GitHubSection';
 
 const getHost = (value?: string) => {
   if (!value) {
@@ -263,6 +264,7 @@ export const BentoGrid: React.FC = () => {
               </section>
             </div>
 
+            <GitHubSection />
           </div>
         </div>
       </main>

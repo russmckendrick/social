@@ -53,7 +53,10 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Split each icon library into separate chunks for dynamic loading (check first)
+          // Only split the icon libraries — everything else (React, React-DOM,
+          // react-github-calendar, framer-motion, …) goes in a single `vendor`
+          // chunk so React is guaranteed to be initialised before any library
+          // that consumes it.
           if (id.includes('react-icons/fa')) return 'icons-fa';
           if (id.includes('react-icons/si')) return 'icons-si';
           if (id.includes('react-icons/tb')) return 'icons-tb';
@@ -61,20 +64,6 @@ export default defineConfig({
           if (id.includes('react-icons/md')) return 'icons-md';
           if (id.includes('react-icons')) return 'icons-other';
 
-          // Separate React vendor bundle
-          if (id.includes('node_modules/react') && !id.includes('react-icons')) {
-            return 'react-vendor';
-          }
-          if (id.includes('node_modules/react-dom')) {
-            return 'react-vendor';
-          }
-
-          // Separate Framer Motion
-          if (id.includes('node_modules/framer-motion')) {
-            return 'framer-motion';
-          }
-
-          // Other vendor dependencies
           if (id.includes('node_modules')) {
             return 'vendor';
           }

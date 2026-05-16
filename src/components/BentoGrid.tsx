@@ -14,6 +14,7 @@ import { PostCard } from './PostCard';
 import { ProfileCard } from './ProfileCard';
 import { RecordCard } from './RecordCard';
 import { GitHubSection } from './GitHubSection';
+import { ErrorBoundary } from './ErrorBoundary';
 
 const getHost = (value?: string) => {
   if (!value) {
@@ -125,6 +126,7 @@ export const BentoGrid: React.FC = () => {
           </aside>
 
           <div className="space-y-4 lg:col-span-9 lg:space-y-6">
+            <ErrorBoundary label="blog-posts">
             <section className="space-y-3">
               <div className="flex items-center justify-between">
                 <h2 className="font-display text-lg font-semibold">
@@ -173,8 +175,10 @@ export const BentoGrid: React.FC = () => {
                 ))}
               </div>
             </section>
+            </ErrorBoundary>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:gap-6">
+              <ErrorBoundary label="records">
               <section className="space-y-3">
                 <div className="flex items-center justify-between">
                   <h2 className="font-display text-base font-semibold">
@@ -218,7 +222,9 @@ export const BentoGrid: React.FC = () => {
                   ))}
                 </div>
               </section>
+              </ErrorBoundary>
 
+              <ErrorBoundary label="books">
               <section className="space-y-3">
                 <div className="flex items-center justify-between">
                   <h2 className="font-display text-base font-semibold">
@@ -262,9 +268,12 @@ export const BentoGrid: React.FC = () => {
                   ))}
                 </div>
               </section>
+              </ErrorBoundary>
             </div>
 
-            <GitHubSection />
+            <ErrorBoundary label="github">
+              <GitHubSection />
+            </ErrorBoundary>
           </div>
         </div>
       </main>

@@ -8,3 +8,4 @@ export { HeaderCard } from './HeaderCard';
 export { ThemeSwitcher } from './ThemeSwitcher';
 export { GitHubSection } from './GitHubSection';
 export { RepoCard } from './RepoCard';
+export { ErrorBoundary } from './ErrorBoundary';

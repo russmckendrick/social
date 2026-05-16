@@ -44,10 +44,10 @@ export const useGitHub = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+      let anySuccess = false;
+
       try {
-        setLoading(true);
-        
-        // Fetch Profile Stats
         const profileResponse = await fetch(`https://api.github.com/users/${siteConfig.github.username}`);
         if (profileResponse.ok) {
           const profileData = await profileResponse.json();
@@ -58,49 +58,61 @@ export const useGitHub = () => {
             following: profileData.following,
             created_at: profileData.created_at,
           });
+          anySuccess = true;
         }
-
-        // 1. Try to fetch pinned repos
-        const pinnedResponse = await fetch(siteConfig.github.pinnedReposApi);
-        let pinnedRepos: Repo[] = [];
-        
-        if (pinnedResponse.ok) {
-          const pinnedData = await pinnedResponse.json() as GitHubPinnedRepo[];
-          pinnedRepos = pinnedData.map((repo) => ({
-            name: repo.repo,
-            description: repo.description,
-            url: `https://github.com/${repo.owner}/${repo.repo}`,
-            language: repo.language,
-            stars: parseInt(repo.stars) || 0,
-            forks: parseInt(repo.forks) || 0,
-          }));
-        }
-
-        // 2. Fetch recent repos from public API as fallback or addition
-        const recentResponse = await fetch(`https://api.github.com/users/${siteConfig.github.username}/repos?sort=updated&per_page=8`);
-        let recentRepos: Repo[] = [];
-        
-        if (recentResponse.ok) {
-          const recentData = await recentResponse.json() as GitHubRestRepo[];
-          recentRepos = recentData
-            .filter((repo) => !pinnedRepos.some(p => p.name === repo.name)) // Don't duplicate
-            .map((repo) => ({
-              name: repo.name,
-              description: repo.description,
-              url: repo.html_url,
-              language: repo.language,
-              stars: repo.stargazers_count,
-              forks: repo.forks_count,
-            }));
-        }
-
-        setRepos([...pinnedRepos, ...recentRepos].slice(0, 8));
       } catch (err) {
-        console.error('GitHub fetch error:', err);
-        setError('Could not load GitHub data');
-      } finally {
-        setLoading(false);
+        console.warn('GitHub profile fetch failed:', err);
       }
+
+      let pinnedRepos: Repo[] = [];
+      try {
+        const pinnedResponse = await fetch(siteConfig.github.pinnedReposApi);
+        if (pinnedResponse.ok) {
+          const pinnedData = await pinnedResponse.json();
+          if (Array.isArray(pinnedData)) {
+            pinnedRepos = (pinnedData as GitHubPinnedRepo[]).map((repo) => ({
+              name: repo.repo,
+              description: repo.description,
+              url: `https://github.com/${repo.owner}/${repo.repo}`,
+              language: repo.language,
+              stars: parseInt(repo.stars) || 0,
+              forks: parseInt(repo.forks) || 0,
+            }));
+            anySuccess = true;
+          }
+        }
+      } catch (err) {
+        console.warn('GitHub pinned repos fetch failed:', err);
+      }
+
+      let recentRepos: Repo[] = [];
+      try {
+        const recentResponse = await fetch(`https://api.github.com/users/${siteConfig.github.username}/repos?sort=updated&per_page=8`);
+        if (recentResponse.ok) {
+          const recentData = await recentResponse.json();
+          if (Array.isArray(recentData)) {
+            recentRepos = (recentData as GitHubRestRepo[])
+              .filter((repo) => !pinnedRepos.some((p) => p.name === repo.name))
+              .map((repo) => ({
+                name: repo.name,
+                description: repo.description,
+                url: repo.html_url,
+                language: repo.language,
+                stars: repo.stargazers_count,
+                forks: repo.forks_count,
+              }));
+            anySuccess = true;
+          }
+        }
+      } catch (err) {
+        console.warn('GitHub recent repos fetch failed:', err);
+      }
+
+      setRepos([...pinnedRepos, ...recentRepos].slice(0, 8));
+      if (!anySuccess) {
+        setError('Could not load GitHub data');
+      }
+      setLoading(false);
     };
 
     fetchData();

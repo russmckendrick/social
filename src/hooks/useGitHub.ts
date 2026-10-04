@@ -7,34 +7,41 @@ export type Repo = {
   url: string;
   language: string | null;
   stars: number;
-  forks: number;
+  pushedAt: string;
 };
 
 export type GitHubProfile = {
   followers: number;
   public_repos: number;
-  public_gists: number;
-  following: number;
   created_at: string;
 };
 
-interface GitHubPinnedRepo {
-  owner: string;
-  repo: string;
-  description: string;
-  language: string;
-  stars: string;
-  forks: string;
-}
-
 interface GitHubRestRepo {
   name: string;
-  description: string;
+  description: string | null;
   html_url: string;
   language: string | null;
   stargazers_count: number;
-  forks_count: number;
+  pushed_at: string;
+  fork: boolean;
+  archived: boolean;
 }
+
+const API = 'https://api.github.com';
+
+// From the most recently pushed repos, feature the most-starred one plus the
+// latest one that isn't it, so the tile shows both "popular" and "active".
+const pickFeatured = (repos: Repo[]): Repo[] => {
+  const recent = repos.slice(0, 10);
+  if (recent.length === 0) {
+    return [];
+  }
+
+  const popular = [...recent].sort((a, b) => b.stars - a.stars)[0];
+  const latest = recent.find((repo) => repo.name !== popular.name);
+
+  return latest ? [popular, latest] : [popular];
+};
 
 export const useGitHub = () => {
   const [repos, setRepos] = useState<Repo[]>([]);
@@ -43,79 +50,62 @@ export const useGitHub = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isActive = true;
+    const { username, excludeRepos } = siteConfig.github;
+
     const fetchData = async () => {
-      setLoading(true);
-      let anySuccess = false;
+      const [profileResult, reposResult] = await Promise.allSettled([
+        fetch(`${API}/users/${username}`).then((res) => (res.ok ? res.json() : null)),
+        fetch(`${API}/users/${username}/repos?sort=pushed&per_page=30`).then((res) =>
+          res.ok ? res.json() : null,
+        ),
+      ]);
 
-      try {
-        const profileResponse = await fetch(`https://api.github.com/users/${siteConfig.github.username}`);
-        if (profileResponse.ok) {
-          const profileData = await profileResponse.json();
-          setProfile({
-            followers: profileData.followers,
-            public_repos: profileData.public_repos,
-            public_gists: profileData.public_gists,
-            following: profileData.following,
-            created_at: profileData.created_at,
-          });
-          anySuccess = true;
-        }
-      } catch (err) {
-        console.warn('GitHub profile fetch failed:', err);
+      if (!isActive) {
+        return;
       }
 
-      let pinnedRepos: Repo[] = [];
-      try {
-        const pinnedResponse = await fetch(siteConfig.github.pinnedReposApi);
-        if (pinnedResponse.ok) {
-          const pinnedData = await pinnedResponse.json();
-          if (Array.isArray(pinnedData)) {
-            pinnedRepos = (pinnedData as GitHubPinnedRepo[]).map((repo) => ({
-              name: repo.repo,
-              description: repo.description,
-              url: `https://github.com/${repo.owner}/${repo.repo}`,
-              language: repo.language,
-              stars: parseInt(repo.stars) || 0,
-              forks: parseInt(repo.forks) || 0,
-            }));
-            anySuccess = true;
-          }
-        }
-      } catch (err) {
-        console.warn('GitHub pinned repos fetch failed:', err);
+      const profileData = profileResult.status === 'fulfilled' ? profileResult.value : null;
+      if (profileData) {
+        setProfile({
+          followers: profileData.followers,
+          public_repos: profileData.public_repos,
+          created_at: profileData.created_at,
+        });
       }
 
-      let recentRepos: Repo[] = [];
-      try {
-        const recentResponse = await fetch(`https://api.github.com/users/${siteConfig.github.username}/repos?sort=updated&per_page=8`);
-        if (recentResponse.ok) {
-          const recentData = await recentResponse.json();
-          if (Array.isArray(recentData)) {
-            recentRepos = (recentData as GitHubRestRepo[])
-              .filter((repo) => !pinnedRepos.some((p) => p.name === repo.name))
-              .map((repo) => ({
-                name: repo.name,
-                description: repo.description,
-                url: repo.html_url,
-                language: repo.language,
-                stars: repo.stargazers_count,
-                forks: repo.forks_count,
-              }));
-            anySuccess = true;
-          }
-        }
-      } catch (err) {
-        console.warn('GitHub recent repos fetch failed:', err);
+      const repoData = reposResult.status === 'fulfilled' ? reposResult.value : null;
+      if (Array.isArray(repoData)) {
+        const candidates = (repoData as GitHubRestRepo[])
+          .filter(
+            (repo) =>
+              !repo.fork &&
+              !repo.archived &&
+              repo.description &&
+              !excludeRepos.includes(repo.name),
+          )
+          .map((repo) => ({
+            name: repo.name,
+            description: repo.description ?? '',
+            url: repo.html_url,
+            language: repo.language,
+            stars: repo.stargazers_count,
+            pushedAt: repo.pushed_at,
+          }));
+        setRepos(pickFeatured(candidates));
       }
 
-      setRepos([...pinnedRepos, ...recentRepos].slice(0, 8));
-      if (!anySuccess) {
+      if (!profileData && !Array.isArray(repoData)) {
         setError('Could not load GitHub data');
       }
       setLoading(false);
     };
 
     fetchData();
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   return { repos, profile, loading, error };

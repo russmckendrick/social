@@ -4,197 +4,92 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Modern React-based social landing page for Russ McKendrick deployed at https://www.russ.social/. The site displays a bento grid layout with social links, blog posts, books, and vinyl records - all configuration-driven with dynamic content fetching.
+React social landing page for Russ McKendrick, deployed at https://www.russ.social/. It's a bento board of tiles: profile, latest blog post, record and book stats, newest records, social links, more posts, GitHub activity and books. Content is configuration-driven and partly fetched at runtime. It has light and dark themes that follow the visitor's OS setting.
 
-## Architecture
+## Design System
 
-### Tech Stack
-- **Framework**: React 18 with TypeScript
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS v4 with custom CSS
-- **Icons**: React Icons (Simple Icons, Lucide, FontAwesome)
-- **Deployment**: Cloudflare Pages via GitHub Actions
+Read `DESIGN.md` before making visual or UX changes. It holds the design tokens and the reasoning behind colours, typography, layout, shapes and component patterns.
 
-### Bento Grid System
-The layout uses CSS Grid with responsive columns:
-- **Mobile**: 2 columns
-- **Tablet (md)**: 4 columns
-- **Desktop (lg)**: 6 columns
-- **Large (xl)**: 8 columns
+When changing the site's visual language, update `DESIGN.md` in the same change so it stays the source of truth.
 
-Grid uses `grid-flow-dense` for optimal item packing.
+## Tech Stack
 
-### Key Components
+- **Framework**: React 19 with TypeScript
+- **Build tool**: Vite
+- **Styling**: Tailwind CSS v4, plus theme tokens in `src/index.css`
+- **Fonts**: Bricolage Grotesque (display) and Geist (body), loaded from Google Fonts in `index.html`
+- **Icons**: React Icons (Simple Icons, Lucide, FontAwesome) via `src/utils/icons.ts`
+- **GitHub heatmap**: `react-github-calendar`
+- **Hosting**: Cloudflare Pages, with a Pages Function at `functions/api/proxy.ts`
+
+## Common Commands
+
+```bash
+pnpm run dev      # local dev server (includes the /api/proxy middleware)
+pnpm run build    # type-check and production build
+pnpm run lint     # eslint
+pnpm run preview  # serve the production build
+pnpm run deploy   # build and deploy with wrangler
+```
+
+## Layout
+
+`BentoGrid.tsx` renders one CSS grid: 1 column on phones, 2 from `sm`, 4 from `lg`, with rows at least 200px tall. Each tile sets its own span with Tailwind classes (`sm:col-span-2`, `lg:row-span-2`, `lg:col-span-4`). Tiles never scroll internally; they show a fixed slice and link out.
+
+## Components
 
 | Component | Purpose |
 |-----------|---------|
-| `BentoGrid.tsx` | Main grid layout, calculates header spans, renders all cards |
-| `ProfileCard.tsx` | 2x2 profile card with random avatar selection |
-| `LinkCard.tsx` | Social link cards with accent colors and borders |
-| `PostCard.tsx` | Blog posts displaying OG images |
-| `BookCard.tsx` | Book covers with hover effects |
-| `RecordCard.tsx` | Vinyl record artwork |
-| `HeaderCard.tsx` | Section headers with inverted accent colors |
+| `BentoGrid.tsx` | Page grid and footer; wires data into tiles |
+| `ProfileTile.tsx` | Lime 2×2 tile: circular avatar, name, headline, buttons for `site` group links |
+| `FeaturedPostTile.tsx` | Latest blog post with cover image |
+| `StatTile.tsx` | Big-number tile (`invert` or `accent` tone) |
+| `RecordsTile.tsx` | Six newest records from russ.fm |
+| `TunesTile.tsx` | Latest "Listened to This Week" post, its album art and previous weeks |
+| `LinksTile.tsx` | Non-site links grouped by `group`, each with its handle, plus an email bar |
+| `PostsTile.tsx` | Next three blog posts |
+| `GitHubTile.tsx` | Contribution heatmap sized to fit, repo count, two featured repos |
+| `BooksTile.tsx` | All books, newest first |
+| `TileHeader.tsx` | Shared tile title and "host ↗" link |
+| `ErrorBoundary.tsx` | Wraps data-driven tiles so one failure doesn't blank the page |
 
-### Data Flow
+## Theming
 
-1. `useMixedContent.ts` hook fetches external data (RSS feed, JSON)
-2. Combines with static config data (links, books)
-3. Orders sections based on `siteConfig.sectionOrder`
-4. Inserts headers between sections to fill row remainders
-5. `BentoGrid.tsx` calculates responsive spans and renders
+- The site follows the visitor's OS light/dark setting, with no toggle and no stored preference.
+- Colours are CSS variables: `:root` holds light values, and `@media (prefers-color-scheme: dark)` overrides them. Components use `bg-[var(--tile)]`, `text-[var(--muted)]` and so on, and don't branch on theme.
+- If a component needs the scheme in JS (e.g. the heatmap's `colorScheme`), use `useColorScheme()` from `src/hooks/useColorScheme.ts`. It updates live when the OS setting changes.
+- Custom CSS in `index.css` lives in `@layer base` and `@layer components` so Tailwind utilities can override it. Unlayered rules beat utilities in v4.
 
-## Common Development Commands
+## Data Flow
 
-```bash
-# Local Development
-pnpm run dev
+1. `useMixedContent.ts` fetches the blog RSS and record collection JSON. It goes through `/api/proxy` first and falls back to a direct fetch.
+2. Static links and books come from `src/config.ts`.
+3. `useTunes.ts` reads the Tunes RSS feed. Each week's cover and records come from the blog's `blog:` namespace: `blog:coverImage`, and `blog:album` with the image in an `image` attribute and alt text `<album> by <artist>`. The feed is generated by `src/pages/tunes/rss.xml.js` in the blog repo.
+4. `useGitHub.ts` calls the public GitHub REST API for profile stats and recently pushed repos. It drops forks, archived repos, repos without a description, and anything in `github.excludeRepos`, then features the most-starred and the most recently pushed.
 
-# Production Build
-pnpm run build
-
-# Type Checking
-pnpm run lint
-
-# Preview Build
-pnpm run preview
-```
-
-## Configuration System
-
-### src/config.ts Structure
-
-```typescript
-interface SiteConfig {
-  title: string;
-  sectionOrder: SectionType[];  // ['links', 'blog', 'books', 'records']
-  footer: { text, showSource, sourceUrl };
-  author: { name, headline, image, links[] };
-  blogFeed: { feedUrl, postCount, itemSize, header };
-  bookShelf: { books[], itemSize, header };
-  recordWall: { collectionUrl, recordCount, itemSize, header };
-}
-```
-
-### Section Order
-Change `sectionOrder` array to reorder sections. Headers automatically appear after each section to introduce the next.
-
-### Header Configuration
-Each section has a `header` config:
-```typescript
-header: {
-  enabled: boolean;
-  text: string;
-  size: CardSize;      // Usually '2x1'
-  color?: AccentColor; // 'blue' | 'pink' | 'purple' | 'orange' | 'green' | 'gray'
-}
-```
-
-### Accent Colors
-Used for links and headers:
-- Links: Light background, dark text/border
-- Headers: Dark background, light text (inverted)
-
-## Header Span Calculation
-
-Headers fill remaining row space. The algorithm in `BentoGrid.tsx`:
-
-1. Track slot-units as items are added (1x1=1, 2x1=2, 2x2=4)
-2. When header encountered, calculate: `cols - (slotUnits % cols)`
-3. Apply responsive spans via CSS custom properties
-4. CSS in `index.css` handles breakpoint-specific spans
-
-Example at 8 columns:
-- Profile (2x2) + 16 links = 20 slots
-- 20 % 8 = 4, so header spans 4 cols
-
-## Avatar System
-
-`ProfileCard.tsx` randomly selects from `/public/avatars/` on mount:
-- 50+ SVG avatar variations
-- Selected via `Math.random()` in useEffect
-- Add new SVGs to expand selection
-
-## File Structure
-
-```
-src/
-├── components/
-│   ├── BentoGrid.tsx      # Grid layout + header span logic
-│   ├── ProfileCard.tsx    # Random avatar selection
-│   ├── LinkCard.tsx       # Accent colors + borders
-│   ├── PostCard.tsx       # OG image display
-│   ├── BookCard.tsx       # Book covers
-│   ├── RecordCard.tsx     # Record artwork
-│   ├── HeaderCard.tsx     # Inverted color headers
-│   └── index.ts
-├── hooks/
-│   └── useMixedContent.ts # Data fetching + section ordering
-├── types/
-│   └── collection.ts
-├── config.ts              # All site configuration
-├── App.tsx
-├── index.css              # Tailwind + header-cell CSS
-└── main.tsx
-
-public/avatars/            # 50+ avatar SVGs
-```
-
-## Styling Notes
-
-### Tailwind CSS v4
-Uses `@import "tailwindcss"` syntax. Custom styles in `index.css`.
-
-### Header Cell CSS
-Custom CSS handles responsive header spans:
-```css
-.header-cell {
-  grid-column: span var(--span-sm, 2);
-}
-@media (min-width: 768px) {
-  .header-cell { grid-column: span var(--span-md, 4); }
-}
-/* etc for lg, xl */
-```
-
-### Card Styling Patterns
-- Links: `bg-{color}-50 border border-{color}-600 text-{color}-600`
-- Headers: `bg-{color}-600 text-{color}-50` (inverted)
-
-## External Data Sources
-
-| Source | URL | Used For |
+| Source | URL | Used for |
 |--------|-----|----------|
-| Blog RSS | `russ.cloud/rss.xml` | Latest blog posts |
-| Records JSON | `russ.fm/collection.json` | Vinyl collection |
-| OG Images | `{post-url}-og.png` | Blog post thumbnails |
+| Blog RSS | `https://www.russ.cloud/rss.xml` | Posts, cover images (`blog:coverImage` namespace) |
+| Tunes RSS | `https://www.russ.cloud/tunes/rss.xml` | Weekly "Listened to This Week" posts, covers and album art |
+| Records JSON | `https://www.russ.fm/collection.json` | Record count and newest records |
+| GitHub REST | `api.github.com/users/russmckendrick` | Repo count, featured repos |
+| Contributions | via `react-github-calendar` | Heatmap |
 
-## Deployment
+## Configuration (`src/config.ts`)
 
-GitHub Actions workflow (`.github/workflows/deploy.yml`):
-1. Triggered on push to `main`
-2. Installs dependencies with pnpm
-3. Builds with Vite
-4. Deploys to Cloudflare Pages
-
-Required secrets:
-- `CLOUDFLARE_API_TOKEN`
-- `CLOUDFLARE_ACCOUNT_ID`
+- `author`: name, headline, sticker image and `links[]`. Each link has a `group` (`site`, `social`, `code`, `listening` or `writing`) and an optional `handle`. `site` links become pill buttons on the profile tile, and the rest are grouped in the links tile.
+- `blogFeed`, `recordWall`: feed and collection URLs, plus the asset and link base URLs.
+- `bookShelf.books`: listed oldest first; the page reverses them. `bookShelf.allBooksUrl` is where "All books" and the book count tile link to (russ.cloud/books).
+- `tunes`: `feedUrl` and `pageUrl` for the Tunes section.
+- `github`: `username` and `excludeRepos`.
+- `sectionOrder` and the per-section `header` and `itemSize` fields are left over from the old layout and aren't read by the current grid.
 
 ## Development Tips
 
-### Adding a New Section
-1. Add type to `SectionType` in config.ts
-2. Add config interface and data
-3. Create card component
-4. Update `useMixedContent.ts` with data fetching
-5. Add to `sectionOrder`
+- **Adding a tile:** create a component that uses the `tile` class and a `TileHeader`, give it grid spans, and place it in `BentoGrid.tsx`. Check the row arrangement at `sm` and `lg`, and document it in `DESIGN.md`.
+- **Adding a social link:** add an entry to `author.links` with a `group`, a `handle`, an icon (`simple`, `lucide` or `fa` library) and a brand `iconColor`. Check that the two columns in `LinksTile.tsx` stay balanced.
+- **Adding a colour:** add a token to `:root` and to the `prefers-color-scheme: dark` block in `index.css`.
 
-### Changing Section Order
-Just reorder the `sectionOrder` array - headers automatically adjust.
+## Deployment
 
-### Modifying Grid Breakpoints
-Update `gridCols` object in `BentoGrid.tsx` and corresponding Tailwind classes.
-
-### Adding New Avatars
-Drop SVG files in `/public/avatars/` and add filename to array in `ProfileCard.tsx`.
+The GitHub Actions workflow is currently disabled (`.github/workflows/deploy.yml.disabled`). `pnpm run deploy` builds and deploys to Cloudflare Pages with Wrangler.

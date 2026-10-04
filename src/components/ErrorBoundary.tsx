@@ -31,7 +31,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     }
 
     return (
-      <div className="glass-card rounded-xl border border-[var(--dashboard-border)] px-4 py-3 text-xs uppercase tracking-[0.18em] text-[var(--dashboard-subtle)]">
+      <div className="tile px-4 py-3 text-sm text-[var(--muted)]">
         This section is taking a break.
       </div>
     );

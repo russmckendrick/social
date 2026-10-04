@@ -1,252 +1,172 @@
 ---
-version: "alpha"
-name: "Russ Social Dashboard"
-description: "A compact, glassy personal dashboard design system for Russ McKendrick's social landing page."
+version: "beta"
+name: "Russ Social Bento"
+description: "A bold, colour-blocked bento design system for Russ McKendrick's social landing page, with light and dark themes."
 colors:
-  primary: "#0969DA"
-  primary-soft: "#EAF3FF"
-  surface: "#F6F8FA"
-  surface-subtle: "#EEF3F8"
-  panel: "#FFFFFF"
-  on-surface: "#1F2328"
-  muted: "#59636E"
-  subtle: "#6E7781"
-  border: "#D0D7DE"
-  control: "#8C959F"
-  window-red: "#FF5F57"
-  window-yellow: "#FFBD2E"
-  window-green: "#28C840"
+  light:
+    bg: "#E7E8EB"
+    tile: "#FFFFFF"
+    tile-sunken: "#F4F5F7"
+    tile-hover: "#EAEBEE"
+    fg: "#121316"
+    muted: "#5C6068"
+    link-hover: "#2E46E6"
+    invert: "#121316"
+    invert-fg: "#FFFFFF"
+    invert-muted: "#B5B8BF"
+  dark:
+    bg: "#0C0D10"
+    tile: "#17181C"
+    tile-sunken: "#1F2126"
+    tile-hover: "#26282E"
+    tile-border: "rgba(255, 255, 255, 0.06)"
+    fg: "#ECEDEF"
+    muted: "#9A9EA7"
+    link-hover: "#A3AEF7"
+    invert: "#ECEDEF"
+    invert-fg: "#121316"
+    invert-muted: "#4A4E56"
+  shared:
+    accent: "#2E46E6"
+    accent-fg: "#FFFFFF"
+    accent-muted: "#D7DCFF"
+    lime: "#D5F05A"
+    lime-fg: "#121316"
+    lime-muted: "#2A2D1A"
+  heatmap:
+    light: ["#ECEDF0", "#C9D0FB", "#8E9CF4", "#5468EC", "#2E46E6"]
+    dark: ["#24262C", "#26337A", "#3446B8", "#5468EC", "#A3AEF7"]
 typography:
-  display-sm:
-    fontFamily: "Space Grotesk"
-    fontSize: 18px
-    fontWeight: 600
-    lineHeight: 1.2
-    letterSpacing: 0em
-  heading-sm:
-    fontFamily: "Space Grotesk"
-    fontSize: 16px
-    fontWeight: 600
-    lineHeight: 1.25
-    letterSpacing: 0em
-  card-title:
-    fontFamily: "Inter"
-    fontSize: 15px
+  display-xl:
+    fontFamily: "Bricolage Grotesque"
+    fontSize: 76px
+    fontWeight: 800
+    lineHeight: 0.92
+    letterSpacing: -0.035em
+  stat:
+    fontFamily: "Bricolage Grotesque"
+    fontSize: 64px
+    fontWeight: 800
+    lineHeight: 1
+    letterSpacing: -0.04em
+  display-md:
+    fontFamily: "Bricolage Grotesque"
+    fontSize: 32px
     fontWeight: 700
-    lineHeight: 1.35
-    letterSpacing: 0em
+    lineHeight: 1.08
+    letterSpacing: -0.02em
+  tile-title:
+    fontFamily: "Bricolage Grotesque"
+    fontSize: 22px
+    fontWeight: 700
+    lineHeight: 1.2
+    letterSpacing: -0.01em
+  body-lg:
+    fontFamily: "Geist"
+    fontSize: 19px
+    fontWeight: 400
+    lineHeight: 1.45
   body-md:
-    fontFamily: "Inter"
+    fontFamily: "Geist"
     fontSize: 16px
     fontWeight: 400
     lineHeight: 1.6
-    letterSpacing: 0em
   body-sm:
-    fontFamily: "Inter"
-    fontSize: 14px
-    fontWeight: 400
-    lineHeight: 1.55
-    letterSpacing: 0em
-  label-sm:
-    fontFamily: "Inter"
-    fontSize: 12px
-    fontWeight: 600
+    fontFamily: "Geist"
+    fontSize: 15px
+    fontWeight: 500
     lineHeight: 1.35
-    letterSpacing: 0em
-  label-xs:
-    fontFamily: "Inter"
-    fontSize: 10px
-    fontWeight: 700
-    lineHeight: 1.2
-    letterSpacing: 0.18em
-  mono-xs:
-    fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace"
-    fontSize: 10px
-    fontWeight: 700
-    lineHeight: 1.3
-    letterSpacing: 0.08em
+  meta:
+    fontFamily: "Geist"
+    fontSize: 13px
+    fontWeight: 400
+    lineHeight: 1.4
 rounded:
-  none: 0px
-  sm: 4px
-  md: 6px
-  lg: 8px
-  xl: 12px
+  tile: 28px
+  cover: 14px
+  chip: 16px
+  icon: 10px
   full: 999px
 spacing:
-  xxs: 2px
-  xs: 4px
-  sm: 8px
-  md: 16px
-  lg: 20px
-  xl: 24px
-  xxl: 32px
-  page-max: 1440px
-components:
-  app-shell:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.on-surface}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.md}"
-  page-container:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.on-surface}"
-    typography: "{typography.body-md}"
-    width: "{spacing.page-max}"
-    padding: "{spacing.xl}"
-  glass-card:
-    backgroundColor: "{colors.panel}"
-    textColor: "{colors.on-surface}"
-    typography: "{typography.body-sm}"
-    rounded: "{rounded.xl}"
-    padding: "{spacing.lg}"
-  section-heading:
-    textColor: "{colors.on-surface}"
-    typography: "{typography.display-sm}"
-  profile-copy:
-    textColor: "{colors.muted}"
-    typography: "{typography.body-sm}"
-  social-link:
-    backgroundColor: "{colors.panel}"
-    textColor: "{colors.muted}"
-    typography: "{typography.body-sm}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.md}"
-  social-link-hover:
-    backgroundColor: "{colors.primary-soft}"
-    textColor: "{colors.primary}"
-    typography: "{typography.body-sm}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.md}"
-  icon-button:
-    backgroundColor: "{colors.panel}"
-    textColor: "{colors.subtle}"
-    typography: "{typography.label-sm}"
-    rounded: "{rounded.full}"
-    size: 32px
-  icon-button-hover:
-    backgroundColor: "{colors.panel}"
-    textColor: "{colors.primary}"
-    typography: "{typography.label-sm}"
-    rounded: "{rounded.full}"
-    size: 32px
-  browser-frame:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.muted}"
-    typography: "{typography.label-xs}"
-    rounded: "{rounded.xl}"
-    padding: "{spacing.sm}"
-  browser-titlebar:
-    backgroundColor: "{colors.panel}"
-    textColor: "{colors.subtle}"
-    typography: "{typography.label-xs}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.sm}"
-  content-card:
-    backgroundColor: "{colors.panel}"
-    textColor: "{colors.on-surface}"
-    typography: "{typography.card-title}"
-    rounded: "{rounded.xl}"
-    padding: "{spacing.md}"
-  media-frame:
-    backgroundColor: "{colors.surface-subtle}"
-    textColor: "{colors.on-surface}"
-    typography: "{typography.body-sm}"
-    rounded: "{rounded.lg}"
-    padding: "{spacing.xs}"
-  divider:
-    backgroundColor: "{colors.border}"
-    textColor: "{colors.on-surface}"
-    height: 1px
-  control-chip:
-    backgroundColor: "{colors.control}"
-    textColor: "{colors.on-surface}"
-    typography: "{typography.label-xs}"
-    rounded: "{rounded.full}"
-    padding: "{spacing.xs}"
-  window-close:
-    backgroundColor: "{colors.window-red}"
-    textColor: "{colors.on-surface}"
-    rounded: "{rounded.full}"
-    size: 10px
-  window-minimize:
-    backgroundColor: "{colors.window-yellow}"
-    textColor: "{colors.on-surface}"
-    rounded: "{rounded.full}"
-    size: 10px
-  window-zoom:
-    backgroundColor: "{colors.window-green}"
-    textColor: "{colors.on-surface}"
-    rounded: "{rounded.full}"
-    size: 10px
-  footer-link:
-    textColor: "{colors.subtle}"
-    typography: "{typography.mono-xs}"
+  gap: 16px
+  tile-padding-x: 28px
+  tile-padding-y: 24px
+  page-max: 1280px
 ---
 
 # Russ Social Design System
 
 ## Overview
 
-Russ Social should feel like a polished personal operating dashboard: compact, calm, technical, and approachable. The interface presents a lot of links and media without feeling heavy, using glass panels, small system-style controls, and crisp typography to make the page feel curated rather than promotional.
+Russ Social is a bento board: a grid of rounded tiles, a few of them painted in solid colour, the rest quiet so the content carries them. It should feel confident and a little playful (big type, a lime profile tile, one chunky number per stat) while staying useful. Everything a visitor wants is on the first screen or one scroll away, and nothing scrolls inside a box.
 
-The visual personality is influenced by GitHub-style neutrals, macOS window chrome, and a bento dashboard rhythm. Brand color appears as a functional blue for interaction and navigation, while individual social services and media covers bring their own color as content.
+The expressive layer is real content: the illustrated sticker, blog cover art, album sleeves and book covers. The UI around it is flat, with no shadows, glass or window chrome.
 
 ## Colors
 
-- **Primary `#0969DA`:** The main interactive blue for hover states, active links, icon controls, and focused actions.
-- **Primary soft `#EAF3FF`:** A pale blue tint used for selected or hovered informational chips.
-- **Surface `#F6F8FA`:** The page background and browser-frame foundation.
-- **Surface subtle `#EEF3F8`:** Secondary panels, image placeholders, scroll containers, and quiet contrast behind media.
-- **Panel `#FFFFFF`:** Card interiors and controls. Use with translucent treatment in code where the glass effect is needed.
-- **Text neutrals `#1F2328`, `#59636E`, `#6E7781`:** Primary text, body-muted text, and tiny metadata respectively.
-- **Border `#D0D7DE`:** One-pixel panel separation, dividers, and compact grid boundaries.
-- **Window controls `#FF5F57`, `#FFBD2E`, `#28C840`:** Small decorative browser chrome dots only.
+Colours are CSS custom properties in `src/index.css`. `:root` holds light values, and a `prefers-color-scheme: dark` media query overrides them, so components only reference `var(--token)` and never branch on the theme.
 
-Dynamic social brand colors should come from `siteConfig.author.links[].iconColor`. Treat those as content-level accents, usually expressed as icon color and a 10-14% hover tint, rather than expanding the global palette.
+- **Ground `--bg`:** Cool grey in light mode, near-black in dark. Tiles sit on it with no border in light mode and a 6% white hairline in dark.
+- **Tile `--tile`, `--tile-sunken`, `--tile-hover`:** White, light grey and hover grey in light mode, stepping up from the ground in dark. Use sunken for chips, repo rows and image placeholders inside a tile.
+- **Lime `--lime`:** The signature colour, used only for the profile tile. It stays the same in both themes, as do its ink (`--lime-fg`) and muted copy (`--lime-muted`).
+- **Cobalt `--accent`:** The brand blue. Used for the books stat tile, the "New post" badge, focus rings and the contribution heatmap. White text on it passes AA.
+- **Invert `--invert`:** A tile that flips against the theme: ink with white text in light mode, near-white with ink text in dark. Used for the records stat tile.
+- **Text `--fg`, `--muted`:** Primary and secondary copy. Muted passes 4.5:1 on every tile surface in both themes.
+- **Link hover `--link-hover`:** Cobalt in light mode, a lighter periwinkle in dark so it stays readable.
+- **Social brand colours** come from `siteConfig.author.links[].iconColor` and fill each link's icon square. Dark brand colours (GitHub, Medium, Discogs) get a faint ring in dark mode via `--icon-ring`.
+
+Use at most two painted tiles per row. Lime, cobalt and invert should never sit next to each other in a way that makes the row feel like a flag.
 
 ## Typography
 
-- **Display and section headings:** Space Grotesk, semibold, compact line height. Use it for dashboard section titles and the profile name.
-- **Body and card copy:** Inter, regular or bold depending on hierarchy. Keep body text small, relaxed, and scannable.
-- **Metadata:** Inter or monospace at 10-12px. Uppercase metadata may use positive tracking for host labels, tags, dates, footer links, and browser title text.
-- **Line length:** Card text should clamp aggressively; titles usually stay to two lines and summaries to three.
+- **Display:** Bricolage Grotesque, weight 700–800, tight negative tracking. Use it for the name, stats, the featured post title and tile titles.
+- **Body:** Geist, regular or medium. Use it for headlines, summaries, labels and metadata.
+- **No all-caps tracked labels.** Metadata is sentence case at 13–14px in `--muted`.
+- Titles clamp to two lines in lists and three in the featured post. Summaries clamp to three.
 
 ## Layout
 
-The page is a constrained dashboard shell with a maximum width of 1440px, small mobile padding, and denser desktop spacing. Desktop uses a 12-column composition: a narrow profile/social rail and a wider content area for blog posts, records, and books.
+- The page is a single grid, max 1280px wide, with 16px gaps and rows at least 200px tall.
+- The grid has 1 column on phones, 2 from `sm` (640px) and 4 from `lg` (1024px).
+- At `lg` the tile order is: profile (2×2), featured post (2×2) / records stat, books stat, new records (2×1) / Listened to This Week (4×1) / links (2×2), more posts (2×1), GitHub (2×1) / books (4×1).
+- Tiles never scroll internally. Show a fixed slice (six records, three posts, two repos) and link out for the rest.
+- The GitHub heatmap shows as many recent weeks as fit its tile, measured with a ResizeObserver, so it never scrolls sideways.
 
-Use 16px gaps as the default rhythm, moving to 24px only for desktop section separation. Scrollable lanes are part of the layout language: horizontal for latest posts, vertical for records and books, with visible compact controls instead of large navigation elements.
+## Shapes & Depth
 
-## Elevation & Depth
-
-Depth comes from glass treatment rather than heavy shadows. The base card pattern is a translucent white panel, 16px backdrop blur, a one-pixel neutral border, and a soft shadow equivalent to `0 18px 40px rgba(31, 35, 40, 0.08)`.
-
-Hover depth should be small and tactile: translate content cards up by roughly 2px and increase the shadow slightly. Do not stack multiple shadow systems in the same component.
-
-## Shapes
-
-Cards and scroll panels use 12px corners. Media inside cards uses 8px corners, while very small framed elements may use 4-6px.
-
-Use fully rounded shapes only for avatars, icon buttons, browser pills, status dots, and compact chips. Avoid oversized pill shapes for regular cards or content containers.
+- Tiles use 28px corners. Covers and album art use 12–14px, link chips 16px, icon squares 10px. Badges and site buttons are fully rounded pills.
+- There are no shadows. Depth comes from colour: a sunken surface inside a tile, a painted tile among white ones.
+- Linked tiles lift 3px on hover, and images inside them scale 3–5%. Both effects are switched off under `prefers-reduced-motion`.
 
 ## Components
 
-- **Glass card:** The default container for profile, records, books, and post cards. It should feel light, bordered, and slightly frosted.
-- **Social link:** A compact row with a service icon, truncated label, and outbound arrow. Hover states tint the row with the service color, while keeping the layout fixed.
-- **Post card:** A glass card with browser chrome, host pill, category chip, 16:9 media, title, summary, and tiny metadata footer.
-- **Record card:** A square album image over a compact title/artist block. Let album art carry the color.
-- **Book card:** A cover-forward tile with a small title row and outbound arrow. Use subtle lift and image scale on hover.
-- **Icon button:** A 32px circular control with a border, white panel fill, and subdued icon color that turns primary blue on hover.
-- **Browser chrome:** Small red/yellow/green dots and centered title pills create the site’s operating-system motif. Keep them tiny and precise.
+- **ProfileTile:** The lime 2×2 tile. The sticker sits top-left, cropped into an ink circle so its flat-bottomed bust never shows a hard edge. The name, headline and matching ink pill buttons (lime icon plus host) for the `site` group links anchor the bottom.
+- **FeaturedPostTile:** The latest blog post, with a 2:1 cover, a cobalt "New post" badge, date and read time, display title and summary.
+- **StatTile:** A single large number with a label and caption. Use the `invert` and `accent` tones.
+- **RecordsTile:** The six newest records as square sleeves, plus a "Latest:" line naming the newest.
+- **LinksTile:** The non-site links, grouped as Social and Code in one column and Listening and Writing in the other (a single column below 420px). Each row has a brand-coloured icon square, the service name and the handle, plus an arrow that shows on hover. A sunken "Prefer email? / Say hello" bar (the mailto from the RSS `managingEditor`) is pinned to the bottom, so the tile fills its 2-row slot without a dead gap.
+- **TunesTile:** Full width. On the left (7fr) is the latest "Listened to This Week" post: a 21:9 cover, a cobalt "Week N" badge, the date with an "AI" note, the title and the description. On the right (5fr) is that week's album art as a 4×2 grid, then three previous weeks as rows. It stacks on phones.
+- **PostsTile:** Three more posts, each with a thumbnail, title and date.
+- **GitHubTile:** A cobalt contribution heatmap, the public repo count, and two repos (most-starred and most recently pushed).
+- **BooksTile:** All books, newest first, as covers with titles, 7 per row at `lg`.
+- **TileHeader:** A display title on the left and a muted "host ↗" link on the right.
+
+## Theming
+
+- The site always follows the visitor's OS light/dark setting, and there is no toggle.
+- Light tokens live on `:root`. Dark overrides sit in `@media (prefers-color-scheme: dark)`, so switching the OS updates the page live with no JavaScript and no flash.
+- `index.html` declares `color-scheme: light dark` and a `theme-color` meta for each scheme.
+- Tailwind's `dark:` variant uses its default media query.
+- The few components that need the scheme in JS (the GitHub heatmap) read it from `useColorScheme()`.
+- Older versions saved a `theme` value in `localStorage`. Nothing reads it any more, so a stale value can't pin a visitor to one mode.
 
 ## Do's and Don'ts
 
-- Do keep the first screen dense and useful; this is a working personal dashboard, not a marketing landing page.
-- Do use real content imagery, album art, book covers, avatars, and blog images as the expressive layer.
-- Do keep card corners, borders, and shadows consistent so the page reads as one system.
-- Do use social brand colors sparingly for icons and hover tints, not as large background blocks.
-- Don't introduce large hero sections, decorative gradient blobs, or oversized explanatory copy.
-- Don't make cards fight the content with heavy chroma, thick borders, or dramatic hover motion.
-- Don't use nested card frames unless a browser-chrome treatment is part of the component.
-- Don't let dynamic labels resize the grid; truncate, clamp, or scroll instead.
+- Do let content imagery and the three painted colours carry the personality.
+- Do keep every interactive target at least 44px tall, and use real `<a>` and `<button>` elements.
+- Do add new colours as tokens with both light and dark values, never as hard-coded hexes in components. The exceptions are the fixed white and ink site buttons on the lime tile.
+- Don't reintroduce glass panels, drop shadows, macOS window chrome or tracked uppercase labels.
+- Don't add scroll-inside-a-box lanes or carousel arrows. Link out instead.
+- Don't paint more than two tiles in one row, or use lime anywhere but the profile tile.
+- Don't place un-cropped bust or sticker art where its flat edge floats in the middle of a tile. Crop it into a shape or anchor it to an edge.
+- Don't let a row-spanning tile end in empty space. Pin a footer action to the bottom, or rebalance the content.

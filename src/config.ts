@@ -22,10 +22,16 @@ export interface IconConfig {
   library: IconLibrary;
 }
 
+// 'site' links are Russ's own sites, promoted to buttons on the profile tile;
+// the rest are grouped in the "Find me elsewhere" tile.
+export type LinkGroup = 'site' | 'social' | 'code' | 'listening' | 'writing';
+
 export interface SocialLink {
   type: string;
   href: string;
   text: string;
+  group: LinkGroup;
+  handle?: string;
   icon: IconConfig;
   iconColor: string;
   size: CardSize;
@@ -68,14 +74,25 @@ export interface SiteConfig {
   };
   bookShelf: {
     title: string;
+    // Where "All books" and the book count tile send people
+    allBooksUrl: string;
     books: Book[];
     itemSize: CardSize;
     header: HeaderConfig;
     hoverIcon: IconConfig;
   };
+  tunes: {
+    title: string;
+    // RSS feed of the weekly "Listened to This Week" posts, including each
+    // week's cover and album art in the blog: namespace
+    feedUrl: string;
+    // Index page the tile links to
+    pageUrl: string;
+  };
   github: {
     username: string;
-    pinnedReposApi: string;
+    // Repos to leave out of the "Building" tile (profile README, blog source, etc.)
+    excludeRepos: string[];
   };
 }
 
@@ -94,6 +111,7 @@ export const siteConfig: SiteConfig = {
     links: [
       {
         type: "blog",
+        group: "site",
         href: "https://www.russ.cloud/",
         text: "My Blog",
         icon: { name: "rss", library: "simple" },
@@ -103,6 +121,7 @@ export const siteConfig: SiteConfig = {
       },
       {
         type: "records",
+        group: "site",
         href: "https://www.russ.fm/",
         text: "My Record Collection",
         icon: { name: "RecordVinyl", library: "fa" },
@@ -112,6 +131,7 @@ export const siteConfig: SiteConfig = {
       },
       {
         type: "tools",
+        group: "site",
         href: "https://www.russ.tools/",
         text: "Russ Tools",
         icon: { name: "Wrench", library: "lucide" },
@@ -121,6 +141,8 @@ export const siteConfig: SiteConfig = {
       },
       {
         type: "github",
+        group: "code",
+        handle: "russmckendrick",
         href: "https://github.com/russmckendrick",
         text: "GitHub",
         icon: { name: "github", library: "simple" },
@@ -130,6 +152,8 @@ export const siteConfig: SiteConfig = {
       },
       {
         type: "linkedin",
+        group: "social",
+        handle: "in/russmckendrick",
         href: "https://www.linkedin.com/in/russmckendrick/",
         text: "LinkedIn",
         icon: { name: "Linkedin", library: "fa" },
@@ -139,6 +163,8 @@ export const siteConfig: SiteConfig = {
       },
       {
         type: "amazon",
+        group: "writing",
+        handle: "Author page",
         href: "https://www.amazon.com/stores/Russ-McKendrick/author/B079KJV88Z?ref=ap_rdr&isDramIntegrated=true&shoppingPortalEnabled=true",
         text: "Amazon",
         icon: { name: "Amazon", library: "fa" },
@@ -148,6 +174,8 @@ export const siteConfig: SiteConfig = {
       },
       {
         type: "packt",
+        group: "writing",
+        handle: "Books on Packt",
         href: "https://www.packtpub.com/en-gb/search?q=Russ%20McKendrick&country=gb&language=en",
         text: "Packt",
         icon: { name: "packt", library: "simple" },
@@ -157,6 +185,8 @@ export const siteConfig: SiteConfig = {
       },
       {
         type: "instagram",
+        group: "social",
+        handle: "@russmckendrick",
         href: "https://www.instagram.com/russmckendrick/",
         text: "Instagram",
         icon: { name: "instagram", library: "simple" },
@@ -166,6 +196,8 @@ export const siteConfig: SiteConfig = {
       },
       {
         type: "mastodon",
+        group: "social",
+        handle: "@russ@social.mckendrick.io",
         href: "https://social.mckendrick.io/@russ",
         text: "Mastodon",
         icon: { name: "mastodon", library: "simple" },
@@ -175,6 +207,8 @@ export const siteConfig: SiteConfig = {
       },
       {
         type: "bluesky",
+        group: "social",
+        handle: "@russmckendrick.bsky.social",
         href: "https://bsky.app/profile/russmckendrick.bsky.social",
         text: "Bluesky",
         icon: { name: "bluesky", library: "simple" },
@@ -184,6 +218,8 @@ export const siteConfig: SiteConfig = {
       },
       {
         type: "medium",
+        group: "writing",
+        handle: "@russmckendrick",
         href: "https://russmckendrick.medium.com/",
         text: "Medium",
         icon: { name: "medium", library: "simple" },
@@ -193,6 +229,8 @@ export const siteConfig: SiteConfig = {
       },
       {
         type: "reddit",
+        group: "social",
+        handle: "u/russmckendrick",
         href: "https://www.reddit.com/user/russmckendrick/",
         text: "Reddit",
         icon: { name: "reddit", library: "simple" },
@@ -202,6 +240,8 @@ export const siteConfig: SiteConfig = {
       },
       {
         type: "discogs",
+        group: "listening",
+        handle: "russmck",
         href: "https://www.discogs.com/user/russmck/collection?header=1",
         text: "Discogs",
         icon: { name: "discogs", library: "simple" },
@@ -211,6 +251,8 @@ export const siteConfig: SiteConfig = {
       },
       {
         type: "apple-music",
+        group: "listening",
+        handle: "russmckendrick",
         href: "https://music.apple.com/profile/russmckendrick",
         text: "Apple Music",
         icon: { name: "applemusic", library: "simple" },
@@ -220,6 +262,8 @@ export const siteConfig: SiteConfig = {
       },
       {
         type: "lastfm",
+        group: "listening",
+        handle: "RussMckendrick",
         href: "https://www.last.fm/user/RussMckendrick",
         text: "Last.fm",
         icon: { name: "lastdotfm", library: "simple" },
@@ -229,6 +273,8 @@ export const siteConfig: SiteConfig = {
       },
       {
         type: "spotify",
+        group: "listening",
+        handle: "russmckendrick",
         href: "https://open.spotify.com/user/russmckendrick",
         text: "Spotify",
         icon: { name: "spotify", library: "simple" },
@@ -270,6 +316,7 @@ export const siteConfig: SiteConfig = {
   },
   bookShelf: {
     title: "My Books",
+    allBooksUrl: "https://www.russ.cloud/books/",
     itemSize: "1x1",
     header: {
       enabled: true,
@@ -363,9 +410,14 @@ export const siteConfig: SiteConfig = {
       }
     ]
   },
+  tunes: {
+    title: "Listened to This Week",
+    feedUrl: "https://www.russ.cloud/tunes/rss.xml",
+    pageUrl: "https://www.russ.cloud/tunes/"
+  },
   github: {
     username: "russmckendrick",
-    pinnedReposApi: "https://gh-pinned-repos.egoist.dev/?username=russmckendrick"
+    excludeRepos: ["russmckendrick", "blog", "russ-social"]
   }
 };
 

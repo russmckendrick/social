@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { siteConfig, type Book, type SocialLink } from '../config';
 import type { BlogPost, Record as DiscogsRecord } from '../types/collection';
+import { fetchWithProxyFallback } from '../utils/fetch';
+import { stripHtml } from '../utils/format';
 
 const BLOG_NAMESPACE = 'https://www.russ.cloud/rss/ns';
 
@@ -20,27 +22,6 @@ const initialState: MixedContentState = {
   posts: [],
   contactHref: undefined,
   loading: true,
-};
-
-const fetchWithProxyFallback = async (url: string) => {
-  const proxiedResponse = await fetch(
-    `/api/proxy?url=${encodeURIComponent(url)}`,
-  ).catch(() => null);
-
-  if (proxiedResponse?.ok) {
-    return proxiedResponse;
-  }
-
-  return fetch(url);
-};
-
-const stripHtml = (value: string) => {
-  if (!value) {
-    return '';
-  }
-
-  const parsed = new DOMParser().parseFromString(value, 'text/html');
-  return parsed.body.textContent?.replace(/\s+/g, ' ').trim() ?? '';
 };
 
 const calculateReadTimeMinutes = (value: string) => {

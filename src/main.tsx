@@ -9,9 +9,9 @@ createRoot(document.getElementById('root')!).render(
     <ErrorBoundary
       label="root"
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-[var(--dashboard-bg)] px-6 text-center">
-          <div className="glass-card max-w-md rounded-xl border border-[var(--dashboard-border)] px-6 py-5 text-sm text-[var(--dashboard-subtle)]">
-            <p className="font-semibold text-[var(--dashboard-fg)]">Something went sideways.</p>
+        <div className="flex min-h-screen items-center justify-center bg-[var(--bg)] px-6 text-center">
+          <div className="tile max-w-md px-6 py-5 text-sm text-[var(--muted)]">
+            <p className="font-semibold text-[var(--fg)]">Something went sideways.</p>
             <p className="mt-2">Try refreshing — if it persists the deploy may be mid-flight.</p>
           </div>
         </div>

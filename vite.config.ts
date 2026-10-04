@@ -53,23 +53,15 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Only split the icon libraries — everything else (React, React-DOM,
-          // react-github-calendar, framer-motion, …) goes in a single `vendor`
-          // chunk so React is guaranteed to be initialised before any library
-          // that consumes it.
-          if (id.includes('react-icons/fa')) return 'icons-fa';
-          if (id.includes('react-icons/si')) return 'icons-si';
-          if (id.includes('react-icons/tb')) return 'icons-tb';
-          if (id.includes('react-icons/ri')) return 'icons-ri';
-          if (id.includes('react-icons/md')) return 'icons-md';
-          if (id.includes('react-icons')) return 'icons-other';
-
+          // All third-party code (React, React-DOM, react-icons,
+          // react-github-calendar, …) goes in a single `vendor` chunk so React
+          // is guaranteed to be initialised before any library that consumes
+          // it. Icons are imported by name, so only the ones used are bundled.
           if (id.includes('node_modules')) {
             return 'vendor';
           }
         }
       }
-    },
-    chunkSizeWarningLimit: 5000 // Icon libraries are large but dynamically loaded
+    }
   }
 })

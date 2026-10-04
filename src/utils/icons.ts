@@ -1,33 +1,56 @@
-import * as SiIcons from "react-icons/si";
-import * as LuIcons from "react-icons/lu";
-import * as FaIcons from "react-icons/fa";
+import {
+    SiApplemusic,
+    SiBluesky,
+    SiDiscogs,
+    SiGithub,
+    SiInstagram,
+    SiLastdotfm,
+    SiMastodon,
+    SiMedium,
+    SiPackt,
+    SiReddit,
+    SiRss,
+    SiSpotify,
+} from "react-icons/si";
+import { LuLink, LuWrench } from "react-icons/lu";
+import { FaAmazon, FaLinkedin, FaRecordVinyl } from "react-icons/fa";
 import { type IconType } from "react-icons";
+import type { IconLibrary } from "../config";
+
+// Explicit registry of the icons referenced by `siteConfig.author.links`.
+// Named imports keep react-icons tree-shakeable; add an entry here when a
+// new link in config.ts needs an icon that isn't listed yet.
+const ICONS: Record<IconLibrary, Record<string, IconType>> = {
+    simple: {
+        applemusic: SiApplemusic,
+        bluesky: SiBluesky,
+        discogs: SiDiscogs,
+        github: SiGithub,
+        instagram: SiInstagram,
+        lastdotfm: SiLastdotfm,
+        mastodon: SiMastodon,
+        medium: SiMedium,
+        packt: SiPackt,
+        reddit: SiReddit,
+        rss: SiRss,
+        spotify: SiSpotify,
+    },
+    lucide: {
+        Link: LuLink,
+        Wrench: LuWrench,
+    },
+    fa: {
+        Amazon: FaAmazon,
+        Linkedin: FaLinkedin,
+        RecordVinyl: FaRecordVinyl,
+    },
+};
 
 // Map config library/name to actual React Icon component
-export const getIcon = (library: string, name: string): IconType => {
-    if (library === 'simple') {
-        // Simple Icons usually start with Si... in react-icons/si
-        const pascalName = name.charAt(0).toUpperCase() + name.slice(1);
-        const iconName = `Si${pascalName}` as keyof typeof SiIcons;
-
-        // Special case overrides
-        if (name === 'lastdotfm') return SiIcons.SiLastdotfm;
-        if (name === 'applemusic') return SiIcons.SiApplemusic;
-
-        return SiIcons[iconName] || SiIcons.SiRss;
+export const getIcon = (library: IconLibrary, name: string): IconType => {
+    const icon = ICONS[library]?.[name];
+    if (!icon && import.meta.env.DEV) {
+        console.warn(`[icons] No icon registered for ${library}/${name}; add it to src/utils/icons.ts`);
     }
-
-    if (library === 'lucide') {
-        // Lucide icons in react-icons/lu are Lu...
-        const iconName = `Lu${name}` as keyof typeof LuIcons;
-        return LuIcons[iconName] || LuIcons.LuLink;
-    }
-
-    if (library === 'fa') {
-        // FontAwesome icons in react-icons/fa are Fa...
-        const iconName = `Fa${name}` as keyof typeof FaIcons;
-        return FaIcons[iconName] || FaIcons.FaLink;
-    }
-
-    return LuIcons.LuLink;
+    return icon ?? LuLink;
 };

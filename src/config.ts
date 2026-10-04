@@ -32,6 +32,8 @@ export interface SocialLink {
   text: string;
   group: LinkGroup;
   handle?: string;
+  // Image shown instead of `icon` where supported (the profile tile's site buttons)
+  favicon?: string;
   icon: IconConfig;
   iconColor: string;
   size: CardSize;
@@ -113,6 +115,7 @@ export const siteConfig: SiteConfig = {
         type: "blog",
         group: "site",
         href: "https://www.russ.cloud/",
+        favicon: "/site-icons/russ-cloud.svg",
         text: "My Blog",
         icon: { name: "rss", library: "simple" },
         iconColor: "#3b82f6",
@@ -123,6 +126,7 @@ export const siteConfig: SiteConfig = {
         type: "records",
         group: "site",
         href: "https://www.russ.fm/",
+        favicon: "/site-icons/russ-fm.svg",
         text: "My Record Collection",
         icon: { name: "RecordVinyl", library: "fa" },
         iconColor: "#8b5cf6",
@@ -133,6 +137,7 @@ export const siteConfig: SiteConfig = {
         type: "tools",
         group: "site",
         href: "https://www.russ.tools/",
+        favicon: "/site-icons/russ-tools.svg",
         text: "Russ Tools",
         icon: { name: "Wrench", library: "lucide" },
         iconColor: "#10b981",

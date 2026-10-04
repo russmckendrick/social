@@ -140,7 +140,7 @@ Use at most two painted tiles per row. Lime, cobalt and invert should never sit 
 
 ## Components
 
-- **ProfileTile:** The lime 2×2 tile. The sticker sits top-left, cropped into an ink circle so its flat-bottomed bust never shows a hard edge. The name, headline and matching ink pill buttons (lime icon plus host) for the `site` group links anchor the bottom.
+- **ProfileTile:** The lime 2×2 tile. The sticker sits top-left, cropped into an ink circle so its flat-bottomed bust never shows a hard edge. The name, headline and matching ink pill buttons (each site's own favicon plus host) for the `site` group links anchor the bottom. The favicons are vendored in `public/site-icons/` and must read on ink, so the russ.tools copy pins its stroke to the light colour. A site link without a `favicon` falls back to its icon in lime.
 - **FeaturedPostTile:** The latest blog post, with a 2:1 cover, a cobalt "New post" badge, date and read time, display title and summary.
 - **StatTile:** A single large number with a label and caption. Use the `invert` and `accent` tones.
 - **RecordsTile:** The six newest records as square sleeves, plus a "Latest:" line naming the newest.

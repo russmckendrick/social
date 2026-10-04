@@ -42,7 +42,11 @@ export const ProfileTile: React.FC = () => {
                   title={site.text}
                   className="flex min-h-11 items-center gap-2 rounded-full bg-[#121316] py-2.5 pl-3.5 pr-[18px] text-[15px] font-medium text-white hover:bg-black"
                 >
-                  <Icon className="h-4 w-4 text-[var(--lime)]" aria-hidden="true" />
+                  {site.favicon ? (
+                    <img src={site.favicon} alt="" className="h-[18px] w-[18px]" aria-hidden="true" />
+                  ) : (
+                    <Icon className="h-4 w-4 text-[var(--lime)]" aria-hidden="true" />
+                  )}
                   {getHost(site.href)}
                 </a>
               </li>
